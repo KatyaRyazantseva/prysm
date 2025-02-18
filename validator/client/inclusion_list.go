@@ -60,6 +60,9 @@ func (v *validator) SubmitInclusionList(ctx context.Context, slot primitives.Slo
 		log.WithError(err).Error("could not submit signed inclusion list")
 	}
 
+	// Count submitted inclusion lists
+	inclusionListSubmittedForRPCCounter.Inc()
+
 	log.WithFields(logrus.Fields{
 		"slot":          slot,
 		"pubkey":        fmt.Sprintf("%#x", pubKey),

@@ -35,6 +35,12 @@ import (
 // [IGNORE] The message is either the first or second valid message received from the validator with index `message.validator_index`.
 // [REJECT] The signature of `inclusion_list.signature` is valid with respect to the validator index.
 func (s *Service) validateInclusionList(ctx context.Context, id peer.ID, msg *pubsub.Message) (pubsub.ValidationResult, error) {
+	// Inclusion list validation metrics
+	start := time.Now()
+	defer func() {
+		inclusionListValidationHistogram.Observe(float64(time.Since(start).Milliseconds()))
+	}()
+
 	// Skip self-published messages.
 	if id == s.cfg.p2p.PeerID() {
 		return pubsub.ValidationAccept, nil
@@ -131,6 +137,9 @@ func (s *Service) validateInclusionList(ctx context.Context, id peer.ID, msg *pu
 
 	msg.ValidatorData = il
 
+	// Inclusion list validation metrics
+	validatedInclusionListCounter.Inc()
+
 	return pubsub.ValidationAccept, nil
 }
 
@@ -148,7 +157,8 @@ func (s *Service) subscriberInclusionList(ctx context.Context, msg proto.Message
 		slots.TimeIntoSlot(uint64(s.cfg.clock.GenesisTime().Unix())) < time.Duration(params.BeaconConfig().InclusionListViewFreezeDeadLine)*time.Second
 
 	s.inclusionLists.Add(il.Message.Slot, il.Message.ValidatorIndex, il.Message.Transactions, isBeforeViewFreezeDeadline)
-
+	inclusionListsCachedCounter.Inc()
+	
 	s.cfg.operationNotifier.OperationFeed().Send(&feed.Event{
 		Type: opfeed.InclusionListReceived,
 		Data: &opfeed.InclusionListReceivedData{

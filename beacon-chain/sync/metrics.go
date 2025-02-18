@@ -184,6 +184,29 @@ var (
 			Help: "Count the number of times blobs have been found in the database.",
 		},
 	)
+
+	// Inclusion lists performance
+	validatedInclusionListCounter = promauto.NewCounter(
+		prometheus.CounterOpts{
+			Name: "beacon_inclusion_list_validated_total",
+			Help: "Count the number of validated inclusion lists.",
+		},
+	)
+
+	inclusionListValidationHistogram = promauto.NewHistogram(
+		prometheus.HistogramOpts{
+			Name:    "beacon_inclusion_list_validation_time_milliseconds",
+			Help:    "Captures total time to validate inclusion list",
+			Buckets: []float64{5, 10, 50, 100, 150, 250, 500, 1000, 2000},
+		},
+	)
+
+	inclusionListsCachedCounter = promauto.NewCounter(
+		prometheus.CounterOpts{
+			Name: "beacon_inclusion_list_cached_total",
+			Help: "Count the number of incoming inclusion lists messages.",
+		},
+	)
 )
 
 func (s *Service) updateMetrics() {

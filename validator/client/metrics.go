@@ -203,6 +203,13 @@ var (
 			"pubkey",
 		},
 	)
+	// Inclusion lists performance
+	inclusionListSubmittedForRPCCounter = promauto.NewCounter(
+		prometheus.CounterOpts{
+			Name: "beacon_inclusion_list_submitted_for_rpc_total",
+			Help: "Count the number of inclusion lists submitted for rpc.",
+		},
+	)
 )
 
 // LogValidatorGainsAndLosses logs important metrics related to this validator client's
