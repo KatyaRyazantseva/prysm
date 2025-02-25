@@ -45,6 +45,7 @@ func (s *Service) GetInclusionList(ctx context.Context, parentHash [32]byte) ([]
 		bytesResult[i] = b
 	}
 
+	getInclusionListCounter.Inc()
 	return bytesResult, nil
 }
 
@@ -75,5 +76,6 @@ func (s *Service) UpdatePayloadWithInclusionList(ctx context.Context, payloadID 
 		return nil, handleRPCError(err)
 	}
 
+	updatePayloadWithInclusionListCounter.Inc()
 	return (*primitives.PayloadID)(result), nil
 }

@@ -177,14 +177,17 @@ func (s *Service) NewPayload(
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to encode execution requests")
 			}
+			totalBytes := 0
 			hexIlTxs := make([]hexutil.Bytes, len(ilTxs))
 			for i, tx := range ilTxs {
 				hexIlTxs[i] = tx
+				totalBytes += len(tx)
 			}
 			err = s.rpcClient.CallContext(ctx, result, NewPayloadMethodV5, payloadPb, versionedHashes, parentBlockRoot, flattenedRequests, hexIlTxs)
 			if err != nil {
 				return nil, handleRPCError(err)
 			}
+			inclusionListSizeBytesCounter.Add(float64(totalBytes))
 		}
 	default:
 		return nil, errors.New("unknown execution data type")

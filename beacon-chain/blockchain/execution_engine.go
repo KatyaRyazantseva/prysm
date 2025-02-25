@@ -285,6 +285,7 @@ func (s *Service) notifyNewPayload(ctx context.Context, preStateVersion int,
 		newPayloadValidNodeCount.Inc()
 		return true, nil
 	case errors.Is(err, execution.ErrBadInclusionListPayloadStatus):
+		newPayloadInclusionListErrorCount.Inc()
 		log.WithFields(logrus.Fields{
 			"slot":       blk.Block().Slot(),
 			"parentRoot": fmt.Sprintf("%#x", parentRoot),

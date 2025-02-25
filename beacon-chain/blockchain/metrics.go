@@ -146,6 +146,11 @@ var (
 		Name: "new_payload_valid_node_count",
 		Help: "Count the number of valid nodes after newPayload EE call",
 	})
+	// beacon metrics specs
+	newPayloadInclusionListErrorCount = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "beacon_inclusion_list_payload_error_total",
+		Help: "Count the number of payloads with invalid inclusion lists",
+	})
 	newPayloadOptimisticNodeCount = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "new_payload_optimistic_node_count",
 		Help: "Count the number of optimistic nodes after newPayload EE call",
