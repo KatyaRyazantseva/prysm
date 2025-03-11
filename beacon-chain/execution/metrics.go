@@ -74,25 +74,25 @@ var (
 	// beacon metrics specs - FOCIL
 	getInclusionListLatency = promauto.NewHistogram(
 		prometheus.HistogramOpts{
-			Name:    "beacon_get_inclusion_list_v1_milliseconds",
+			Name:    "beacon_get_inclusion_list_v1_latency_milliseconds",
 			Help:    "Captures RPC latency for getInclusionListV1 in milliseconds",
-			Buckets: []float64{25, 50, 100, 200, 500, 1000, 2000, 4000},
-		},
-	)
-	getInclusionListCounter = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "beacon_get_inclusion_list_v1_total",
-		Help: "The number of requested payload bodies is too large",
-	})
-	updatePayloadWithInclusionListLatency = promauto.NewHistogram(
-		prometheus.HistogramOpts{
-			Name:    "beacon_update_payload_with_inclusion_list_milliseconds",
-			Help:    "Captures RPC latency for updatePayloadWithInclusionListV1 in milliseconds",
 			Buckets: []float64{25, 50, 100, 200, 500, 1000, 2000, 4000},
 		},
 	)
 	updatePayloadWithInclusionListCounter = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "beacon_update_payload_with_inclusion_list_total",
 		Help: "Count the number of execution payloads with inclusion lists",
+	})
+	updatePayloadWithInclusionListLatency = promauto.NewHistogram(
+		prometheus.HistogramOpts{
+			Name:    "beacon_update_payload_with_inclusion_list_v1_latency_milliseconds",
+			Help:    "Captures RPC latency for updatePayloadWithInclusionListV1 in milliseconds",
+			Buckets: []float64{25, 50, 100, 200, 500, 1000, 2000, 4000},
+		},
+	)
+	getInclusionListCounter = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "beacon_get_inclusion_list_v1_total",
+		Help: "The number of requested payload bodies is too large",
 	})
 	inclusionListSizeBytesCounter = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "beacon_inclusion_list_size_bytes_total",
