@@ -341,8 +341,7 @@ var mainnetBeaconConfig = &BeaconChainConfig{
 	DeprecatedTargetBlobsPerBlockElectra: 6,
 	MaxRequestBlobSidecarsElectra:        1152,
 
-	InclusionListCommitteeSize:  16,
-	InclusionListFreezeDeadLine: 8,
+	InclusionListCommitteeSize: 16,
 }
 
 // MainnetTestConfig provides a version of the mainnet config that has a different name
