@@ -101,6 +101,9 @@ func runTest(t *testing.T, config string, fork int, basePath string) { // nolint
 				case version.Fulu:
 					beaconState = unmarshalFuluState(t, preBeaconStateSSZ)
 					beaconBlock = unmarshalFuluBlock(t, blockSSZ)
+				case version.Eip7805:
+					beaconState = unmarshalEip7805State(t, preBeaconStateSSZ)
+					beaconBlock = unmarshalEip7805Block(t, blockSSZ)
 				default:
 					t.Fatalf("unknown fork version: %v", fork)
 				}
@@ -143,6 +146,8 @@ func runTest(t *testing.T, config string, fork int, basePath string) { // nolint
 							beaconBlock = unmarshalSignedElectraBlock(t, blockSSZ)
 						case version.Fulu:
 							beaconBlock = unmarshalSignedFuluBlock(t, blockSSZ)
+						case version.Eip7805:
+							beaconBlock = unmarshalSignedEip7805Block(t, blockSSZ)
 						default:
 							t.Fatalf("unknown fork version: %v", fork)
 						}
@@ -506,6 +511,34 @@ func unmarshalFuluBlock(t *testing.T, raw []byte) interfaces.SignedBeaconBlock {
 
 func unmarshalSignedFuluBlock(t *testing.T, raw []byte) interfaces.SignedBeaconBlock {
 	base := &ethpb.SignedBeaconBlockFulu{}
+	require.NoError(t, base.UnmarshalSSZ(raw))
+	blk, err := blocks.NewSignedBeaconBlock(base)
+	require.NoError(t, err)
+	return blk
+}
+
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+func unmarshalEip7805State(t *testing.T, raw []byte) state.BeaconState {
+	base := &ethpb.BeaconStateElectra{}
+	require.NoError(t, base.UnmarshalSSZ(raw))
+	st, err := state_native.InitializeFromProtoEip7805(base)
+	require.NoError(t, err)
+	return st
+}
+
+func unmarshalEip7805Block(t *testing.T, raw []byte) interfaces.SignedBeaconBlock {
+	base := &ethpb.BeaconBlockElectra{}
+	require.NoError(t, base.UnmarshalSSZ(raw))
+	blk, err := blocks.NewSignedBeaconBlock(&ethpb.SignedBeaconBlockEip7805{Block: base, Signature: make([]byte, fieldparams.BLSSignatureLength)})
+	require.NoError(t, err)
+	return blk
+}
+
+func unmarshalSignedEip7805Block(t *testing.T, raw []byte) interfaces.SignedBeaconBlock {
+	base := &ethpb.SignedBeaconBlockEip7805{}
 	require.NoError(t, base.UnmarshalSSZ(raw))
 	blk, err := blocks.NewSignedBeaconBlock(base)
 	require.NoError(t, err)

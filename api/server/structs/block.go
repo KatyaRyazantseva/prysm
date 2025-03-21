@@ -503,3 +503,57 @@ func (s *SignedBlindedBeaconBlockFulu) MessageRawJson() ([]byte, error) {
 func (s *SignedBlindedBeaconBlockFulu) SigString() string {
 	return s.Signature
 }
+
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+type SignedBeaconBlockContentsEip7805 struct {
+	SignedBlock *SignedBeaconBlockEip7805 `json:"signed_block"`
+	KzgProofs   []string                  `json:"kzg_proofs"`
+	Blobs       []string                  `json:"blobs"`
+}
+
+type BeaconBlockContentsEip7805 struct {
+	Block     *BeaconBlockElectra `json:"block"`
+	KzgProofs []string            `json:"kzg_proofs"`
+	Blobs     []string            `json:"blobs"`
+}
+
+type SignedBeaconBlockEip7805 struct {
+	Message   *BeaconBlockElectra `json:"message"`
+	Signature string              `json:"signature"`
+}
+
+var _ SignedMessageJsoner = &SignedBeaconBlockEip7805{}
+
+func (s *SignedBeaconBlockEip7805) MessageRawJson() ([]byte, error) {
+	return json.Marshal(s.Message)
+}
+
+func (s *SignedBeaconBlockEip7805) SigString() string {
+	return s.Signature
+}
+
+type BlindedBeaconBlockEip7805 struct {
+	Slot          string                         `json:"slot"`
+	ProposerIndex string                         `json:"proposer_index"`
+	ParentRoot    string                         `json:"parent_root"`
+	StateRoot     string                         `json:"state_root"`
+	Body          *BlindedBeaconBlockBodyElectra `json:"body"`
+}
+
+type SignedBlindedBeaconBlockEip7805 struct {
+	Message   *BlindedBeaconBlockEip7805 `json:"message"`
+	Signature string                     `json:"signature"`
+}
+
+var _ SignedMessageJsoner = &SignedBlindedBeaconBlockEip7805{}
+
+func (s *SignedBlindedBeaconBlockEip7805) MessageRawJson() ([]byte, error) {
+	return json.Marshal(s.Message)
+}
+
+func (s *SignedBlindedBeaconBlockEip7805) SigString() string {
+	return s.Signature
+}

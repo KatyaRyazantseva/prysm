@@ -7,7 +7,7 @@ go_library(
         "block_reader.go",
         "deposit.go",
         "engine_client.go",
-        "engine_client_focil.go",
+        "engine_client_eip7805.go",
         "errors.go",
         "log.go",
         "log_processing.go",

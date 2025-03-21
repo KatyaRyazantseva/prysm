@@ -88,3 +88,22 @@ func NewBeaconBlockContentsFulu() *ethpb.SignedBeaconBlockContentsFulu {
 func NewBlindedBeaconBlockFulu() *ethpb.SignedBlindedBeaconBlockFulu {
 	return HydrateSignedBlindedBeaconBlockFulu(&ethpb.SignedBlindedBeaconBlockFulu{})
 }
+
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+// NewBeaconBlockEip7805 creates a beacon block with minimum marshalable fields.
+func NewBeaconBlockEip7805() *ethpb.SignedBeaconBlockEip7805 {
+	return HydrateSignedBeaconBlockEip7805(&ethpb.SignedBeaconBlockEip7805{})
+}
+
+// NewBeaconBlockContentsEip7805 creates a beacon block with minimum marshalable fields.
+func NewBeaconBlockContentsEip7805() *ethpb.SignedBeaconBlockContentsEip7805 {
+	return HydrateSignedBeaconBlockContentsEip7805(&ethpb.SignedBeaconBlockContentsEip7805{})
+}
+
+// NewBlindedBeaconBlockEip7805 creates a blinded beacon block with minimum marshalable fields.
+func NewBlindedBeaconBlockEip7805() *ethpb.SignedBlindedBeaconBlockEip7805 {
+	return HydrateSignedBlindedBeaconBlockEip7805(&ethpb.SignedBlindedBeaconBlockEip7805{})
+}

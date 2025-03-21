@@ -40,6 +40,8 @@ func (vs *Server) constructGenericBeaconBlock(sBlk interfaces.SignedBeaconBlock,
 		return vs.constructElectraBlock(blockProto, isBlinded, bidStr, blobsBundle), nil
 	case version.Fulu:
 		return vs.constructFuluBlock(blockProto, isBlinded, bidStr, blobsBundle), nil
+	case version.Eip7805:
+		return vs.constructEip7805Block(blockProto, isBlinded, bidStr, blobsBundle), nil
 	default:
 		return nil, fmt.Errorf("unknown block version: %d", sBlk.Version())
 	}
@@ -102,4 +104,16 @@ func (vs *Server) constructFuluBlock(blockProto proto.Message, isBlinded bool, p
 		fuluContents.Blobs = bundle.Blobs
 	}
 	return &ethpb.GenericBeaconBlock{Block: &ethpb.GenericBeaconBlock_Fulu{Fulu: fuluContents}, IsBlinded: false, PayloadValue: payloadValue}
+}
+
+func (vs *Server) constructEip7805Block(blockProto proto.Message, isBlinded bool, payloadValue string, bundle *enginev1.BlobsBundle) *ethpb.GenericBeaconBlock {
+	if isBlinded {
+		return &ethpb.GenericBeaconBlock{Block: &ethpb.GenericBeaconBlock_BlindedEip7805{BlindedEip7805: blockProto.(*ethpb.BlindedBeaconBlockEip7805)}, IsBlinded: true, PayloadValue: payloadValue}
+	}
+	eip7805Contents := &ethpb.BeaconBlockContentsEip7805{Block: blockProto.(*ethpb.BeaconBlockElectra)}
+	if bundle != nil {
+		eip7805Contents.KzgProofs = bundle.Proofs
+		eip7805Contents.Blobs = bundle.Blobs
+	}
+	return &ethpb.GenericBeaconBlock{Block: &ethpb.GenericBeaconBlock_Eip7805{Eip7805: eip7805Contents}, IsBlinded: false, PayloadValue: payloadValue}
 }

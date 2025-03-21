@@ -148,6 +148,7 @@ type BeaconChainConfig struct {
 	BeaconStateDenebFieldCount     int             // BeaconStateDenebFieldCount defines how many fields are in beacon state post upgrade to Deneb.
 	BeaconStateElectraFieldCount   int             // BeaconStateElectraFieldCount defines how many fields are in beacon state post upgrade to Electra.
 	BeaconStateFuluFieldCount      int             // BeaconStateFuluFieldCount defines how many fields are in beacon state post upgrade to Fulu.
+	BeaconStateEip7805FieldCount   int             // BeaconStateEip7805FieldCount defines how many fields are in beacon state post upgrade to Eip7805.
 
 	// Slasher constants.
 	WeakSubjectivityPeriod    primitives.Epoch // WeakSubjectivityPeriod defines the time period expressed in number of epochs were proof of stake network should validate block headers and attestations for slashable events.
@@ -170,8 +171,8 @@ type BeaconChainConfig struct {
 	ElectraForkEpoch     primitives.Epoch `yaml:"ELECTRA_FORK_EPOCH" spec:"true"`     // ElectraForkEpoch is used to represent the assigned fork epoch for electra.
 	FuluForkVersion      []byte           `yaml:"FULU_FORK_VERSION" spec:"true"`      // FuluForkVersion is used to represent the fork version for fulu.
 	FuluForkEpoch        primitives.Epoch `yaml:"FULU_FORK_EPOCH" spec:"true"`        // FuluForkEpoch is used to represent the assigned fork epoch for fulu.
-	Eip7805ForkVersion   []byte           `yaml:"EIP7805_FORK_VERSION" spec:"true"`   // Eip7805ForkVersion is used to represent the fork version for fulu.
-	Eip7805ForkEpoch     primitives.Epoch `yaml:"EIP7805_FORK_EPOCH" spec:"true"`     // Eip7805ForkEpoch is used to represent the assigned fork epoch for fulu.
+	Eip7805ForkVersion   []byte           `yaml:"EIP7805_FORK_VERSION" spec:"true"`   // Eip7805ForkVersion is used to represent the fork version for Eip7805.
+	Eip7805ForkEpoch     primitives.Epoch `yaml:"EIP7805_FORK_EPOCH" spec:"true"`     // Eip7805ForkEpoch is used to represent the assigned fork epoch for Eip7805.
 
 	ForkVersionSchedule map[[fieldparams.VersionLength]byte]primitives.Epoch // Schedule of fork epochs by version.
 	ForkVersionNames    map[[fieldparams.VersionLength]byte]string           // Human-readable names of fork versions.
@@ -329,6 +330,7 @@ func configForkSchedule(b *BeaconChainConfig) map[[fieldparams.VersionLength]byt
 	fvs[bytesutil.ToBytes4(b.DenebForkVersion)] = b.DenebForkEpoch
 	fvs[bytesutil.ToBytes4(b.ElectraForkVersion)] = b.ElectraForkEpoch
 	fvs[bytesutil.ToBytes4(b.FuluForkVersion)] = b.FuluForkEpoch
+	fvs[bytesutil.ToBytes4(b.Eip7805ForkVersion)] = b.Eip7805ForkEpoch
 	return fvs
 }
 
@@ -352,7 +354,7 @@ func ConfigForkVersions(b *BeaconChainConfig) map[[fieldparams.VersionLength]byt
 		bytesutil.ToBytes4(b.DenebForkVersion):     version.Deneb,
 		bytesutil.ToBytes4(b.ElectraForkVersion):   version.Electra,
 		bytesutil.ToBytes4(b.FuluForkVersion):      version.Fulu,
-		bytesutil.ToBytes4(b.Eip7805ForkVersion):   version.Focil,
+		bytesutil.ToBytes4(b.Eip7805ForkVersion):   version.Eip7805,
 	}
 }
 
@@ -444,6 +446,12 @@ func ElectraEnabled() bool {
 // that are specific to peerdas should be allowed to execute.
 func PeerDASEnabled() bool {
 	return BeaconConfig().FuluForkEpoch < math.MaxUint64
+}
+
+// Eip7805Enabled centralizes the check to determine if code paths
+// that are specific to eip7805 should be allowed to execute.
+func Eip7805Enabled() bool {
+	return BeaconConfig().Eip7805ForkEpoch < math.MaxUint64
 }
 
 // WithinDAPeriod checks if the block epoch is within MIN_EPOCHS_FOR_BLOB_SIDECARS_REQUESTS of the given current epoch.

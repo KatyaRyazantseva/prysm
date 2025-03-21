@@ -678,6 +678,19 @@ func testProposeBlock(t *testing.T, graffiti []byte) {
 				},
 			},
 		},
+		{
+			name:    "eip7805 block",
+			version: version.Eip7805,
+			block: &ethpb.GenericBeaconBlock{
+				Block: &ethpb.GenericBeaconBlock_Eip7805{
+					Eip7805: func() *ethpb.BeaconBlockContentsEip7805 {
+						blk := util.NewBeaconBlockContentsEip7805()
+						blk.Block.Block.Body.Graffiti = graffiti
+						return &ethpb.BeaconBlockContentsEip7805{Block: blk.Block.Block, KzgProofs: blk.KzgProofs, Blobs: blk.Blobs}
+					}(),
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {

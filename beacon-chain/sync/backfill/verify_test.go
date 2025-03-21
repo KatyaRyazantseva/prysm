@@ -21,7 +21,7 @@ import (
 
 func TestDomainCache(t *testing.T) {
 	cfg := params.MainnetConfig().Copy()
-	// This hack is needed not to have both Electra and Fulu fork epoch both set to the future max epoch.
+	// This hack is needed not to have both Electra, Fulu and Eip7805 fork epoch both set to the future max epoch.
 	// It can be removed once the Electra fork version has been set to a real value.
 	for version := range cfg.ForkVersionSchedule {
 		if cfg.ForkVersionNames[version] == "electra" {

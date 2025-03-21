@@ -38,6 +38,7 @@ type blindedBlockFixtures struct {
 	afterSkipDeneb  *fullAndBlinded
 	electra         *fullAndBlinded
 	fulu            *fullAndBlinded
+	eip7805         *fullAndBlinded
 }
 
 type fullAndBlinded struct {
@@ -76,6 +77,12 @@ func fuluSlot(t *testing.T) primitives.Slot {
 	return s
 }
 
+func eip7805Slot(t *testing.T) primitives.Slot {
+	s, err := slots.EpochStart(params.BeaconConfig().Eip7805ForkEpoch)
+	require.NoError(t, err)
+	return s
+}
+
 func testBlindedBlockFixtures(t *testing.T) *blindedBlockFixtures {
 	pfx := fixturesStruct()
 	fx := &blindedBlockFixtures{}
@@ -110,11 +117,17 @@ func testBlindedBlockFixtures(t *testing.T) *blindedBlockFixtures {
 	fuluBlock, _ := util.GenerateTestElectraBlockWithSidecar(t, [32]byte{}, fuluSlot(t), 0, util.WithElectraPayload(fulu))
 	fx.fulu = blindedBlockWithHeader(t, fuluBlock)
 
+	eip7805 := fixturesStruct().ExecutionPayloadDeneb
+	eip7805.BlockHash = bytesutil.PadTo([]byte("eip7805"), 32)
+	eip7805.BlockNumber = 7
+	eip7805Block, _ := util.GenerateTestElectraBlockWithSidecar(t, [32]byte{}, eip7805Slot(t), 0, util.WithElectraPayload(eip7805))
+	fx.eip7805 = blindedBlockWithHeader(t, eip7805Block)
+
 	return fx
 }
 
 func TestPayloadBodiesViaUnblinder(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 	fx := testBlindedBlockFixtures(t)
 	t.Run("mix of non-empty and empty", func(t *testing.T) {
 		cli, srv := newMockEngine(t)
@@ -151,7 +164,7 @@ func TestPayloadBodiesViaUnblinder(t *testing.T) {
 }
 
 func TestFixtureEquivalence(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 	fx := testBlindedBlockFixtures(t)
 	t.Run("full and blinded block equivalence", func(t *testing.T) {
 		testAssertReconstructedEquivalent(t, fx.denebBlock.blinded.block, fx.denebBlock.full)
@@ -254,7 +267,7 @@ func TestComputeRanges(t *testing.T) {
 }
 
 func TestReconstructBlindedBlockBatchFallbackToRange(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 	ctx := context.Background()
 	t.Run("fallback fails", func(t *testing.T) {
 		cli, srv := newMockEngine(t)
@@ -340,18 +353,19 @@ func TestReconstructBlindedBlockBatchFallbackToRange(t *testing.T) {
 }
 
 func TestReconstructBlindedBlockBatchDenebAndBeyond(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 	t.Run("deneb and beyond", func(t *testing.T) {
 		cli, srv := newMockEngine(t)
 		fx := testBlindedBlockFixtures(t)
 		srv.register(GetPayloadBodiesByHashV1, func(msg *jsonrpcMessage, w http.ResponseWriter, r *http.Request) {
-			executionPayloadBodies := []*pb.ExecutionPayloadBody{payloadToBody(t, fx.denebBlock.blinded.header), payloadToBody(t, fx.electra.blinded.header), payloadToBody(t, fx.fulu.blinded.header)}
+			executionPayloadBodies := []*pb.ExecutionPayloadBody{payloadToBody(t, fx.denebBlock.blinded.header), payloadToBody(t, fx.electra.blinded.header), payloadToBody(t, fx.fulu.blinded.header), payloadToBody(t, fx.eip7805.blinded.header)}
 			mockWriteResult(t, w, msg, executionPayloadBodies)
 		})
 		blinded := []interfaces.ReadOnlySignedBeaconBlock{
 			fx.denebBlock.blinded.block,
 			fx.electra.blinded.block,
 			fx.fulu.blinded.block,
+			fx.eip7805.blinded.block,
 		}
 		unblinded, err := reconstructBlindedBlockBatch(context.Background(), cli, blinded)
 		require.NoError(t, err)

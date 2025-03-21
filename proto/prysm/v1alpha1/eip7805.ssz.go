@@ -6,20 +6,20 @@ import (
 	github_com_prysmaticlabs_prysm_v5_consensus_types_primitives "github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
 )
 
-// MarshalSSZ ssz marshals the SignedBeaconBlockContentsFulu object
-func (s *SignedBeaconBlockContentsFulu) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the SignedBeaconBlockContentsEip7805 object
+func (s *SignedBeaconBlockContentsEip7805) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(s)
 }
 
-// MarshalSSZTo ssz marshals the SignedBeaconBlockContentsFulu object to a target array
-func (s *SignedBeaconBlockContentsFulu) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the SignedBeaconBlockContentsEip7805 object to a target array
+func (s *SignedBeaconBlockContentsEip7805) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(12)
 
 	// Offset (0) 'Block'
 	dst = ssz.WriteOffset(dst, offset)
 	if s.Block == nil {
-		s.Block = new(SignedBeaconBlockFulu)
+		s.Block = new(SignedBeaconBlockEip7805)
 	}
 	offset += s.Block.SizeSSZ()
 
@@ -65,8 +65,8 @@ func (s *SignedBeaconBlockContentsFulu) MarshalSSZTo(buf []byte) (dst []byte, er
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the SignedBeaconBlockContentsFulu object
-func (s *SignedBeaconBlockContentsFulu) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the SignedBeaconBlockContentsEip7805 object
+func (s *SignedBeaconBlockContentsEip7805) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 12 {
@@ -99,7 +99,7 @@ func (s *SignedBeaconBlockContentsFulu) UnmarshalSSZ(buf []byte) error {
 	{
 		buf = tail[o0:o1]
 		if s.Block == nil {
-			s.Block = new(SignedBeaconBlockFulu)
+			s.Block = new(SignedBeaconBlockEip7805)
 		}
 		if err = s.Block.UnmarshalSSZ(buf); err != nil {
 			return err
@@ -140,13 +140,13 @@ func (s *SignedBeaconBlockContentsFulu) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the SignedBeaconBlockContentsFulu object
-func (s *SignedBeaconBlockContentsFulu) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the SignedBeaconBlockContentsEip7805 object
+func (s *SignedBeaconBlockContentsEip7805) SizeSSZ() (size int) {
 	size = 12
 
 	// Field (0) 'Block'
 	if s.Block == nil {
-		s.Block = new(SignedBeaconBlockFulu)
+		s.Block = new(SignedBeaconBlockEip7805)
 	}
 	size += s.Block.SizeSSZ()
 
@@ -159,13 +159,13 @@ func (s *SignedBeaconBlockContentsFulu) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the SignedBeaconBlockContentsFulu object
-func (s *SignedBeaconBlockContentsFulu) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the SignedBeaconBlockContentsEip7805 object
+func (s *SignedBeaconBlockContentsEip7805) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(s)
 }
 
-// HashTreeRootWith ssz hashes the SignedBeaconBlockContentsFulu object with a hasher
-func (s *SignedBeaconBlockContentsFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the SignedBeaconBlockContentsEip7805 object with a hasher
+func (s *SignedBeaconBlockContentsEip7805) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Block'
@@ -215,13 +215,13 @@ func (s *SignedBeaconBlockContentsFulu) HashTreeRootWith(hh *ssz.Hasher) (err er
 	return
 }
 
-// MarshalSSZ ssz marshals the SignedBeaconBlockFulu object
-func (s *SignedBeaconBlockFulu) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the SignedBeaconBlockEip7805 object
+func (s *SignedBeaconBlockEip7805) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(s)
 }
 
-// MarshalSSZTo ssz marshals the SignedBeaconBlockFulu object to a target array
-func (s *SignedBeaconBlockFulu) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the SignedBeaconBlockEip7805 object to a target array
+func (s *SignedBeaconBlockEip7805) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(100)
 
@@ -247,8 +247,8 @@ func (s *SignedBeaconBlockFulu) MarshalSSZTo(buf []byte) (dst []byte, err error)
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the SignedBeaconBlockFulu object
-func (s *SignedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the SignedBeaconBlockEip7805 object
+func (s *SignedBeaconBlockEip7805) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 100 {
@@ -286,8 +286,8 @@ func (s *SignedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the SignedBeaconBlockFulu object
-func (s *SignedBeaconBlockFulu) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the SignedBeaconBlockEip7805 object
+func (s *SignedBeaconBlockEip7805) SizeSSZ() (size int) {
 	size = 100
 
 	// Field (0) 'Block'
@@ -299,13 +299,13 @@ func (s *SignedBeaconBlockFulu) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the SignedBeaconBlockFulu object
-func (s *SignedBeaconBlockFulu) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the SignedBeaconBlockEip7805 object
+func (s *SignedBeaconBlockEip7805) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(s)
 }
 
-// HashTreeRootWith ssz hashes the SignedBeaconBlockFulu object with a hasher
-func (s *SignedBeaconBlockFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the SignedBeaconBlockEip7805 object with a hasher
+func (s *SignedBeaconBlockEip7805) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Block'
@@ -324,13 +324,13 @@ func (s *SignedBeaconBlockFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	return
 }
 
-// MarshalSSZ ssz marshals the BeaconBlockContentsFulu object
-func (b *BeaconBlockContentsFulu) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the BeaconBlockContentsEip7805 object
+func (b *BeaconBlockContentsEip7805) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(b)
 }
 
-// MarshalSSZTo ssz marshals the BeaconBlockContentsFulu object to a target array
-func (b *BeaconBlockContentsFulu) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the BeaconBlockContentsEip7805 object to a target array
+func (b *BeaconBlockContentsEip7805) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(12)
 
@@ -383,8 +383,8 @@ func (b *BeaconBlockContentsFulu) MarshalSSZTo(buf []byte) (dst []byte, err erro
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the BeaconBlockContentsFulu object
-func (b *BeaconBlockContentsFulu) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the BeaconBlockContentsEip7805 object
+func (b *BeaconBlockContentsEip7805) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 12 {
@@ -458,8 +458,8 @@ func (b *BeaconBlockContentsFulu) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the BeaconBlockContentsFulu object
-func (b *BeaconBlockContentsFulu) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the BeaconBlockContentsEip7805 object
+func (b *BeaconBlockContentsEip7805) SizeSSZ() (size int) {
 	size = 12
 
 	// Field (0) 'Block'
@@ -477,13 +477,13 @@ func (b *BeaconBlockContentsFulu) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the BeaconBlockContentsFulu object
-func (b *BeaconBlockContentsFulu) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the BeaconBlockContentsEip7805 object
+func (b *BeaconBlockContentsEip7805) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(b)
 }
 
-// HashTreeRootWith ssz hashes the BeaconBlockContentsFulu object with a hasher
-func (b *BeaconBlockContentsFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the BeaconBlockContentsEip7805 object with a hasher
+func (b *BeaconBlockContentsEip7805) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Block'
@@ -533,20 +533,20 @@ func (b *BeaconBlockContentsFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	return
 }
 
-// MarshalSSZ ssz marshals the SignedBlindedBeaconBlockFulu object
-func (s *SignedBlindedBeaconBlockFulu) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the SignedBlindedBeaconBlockEip7805 object
+func (s *SignedBlindedBeaconBlockEip7805) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(s)
 }
 
-// MarshalSSZTo ssz marshals the SignedBlindedBeaconBlockFulu object to a target array
-func (s *SignedBlindedBeaconBlockFulu) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the SignedBlindedBeaconBlockEip7805 object to a target array
+func (s *SignedBlindedBeaconBlockEip7805) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(100)
 
 	// Offset (0) 'Message'
 	dst = ssz.WriteOffset(dst, offset)
 	if s.Message == nil {
-		s.Message = new(BlindedBeaconBlockFulu)
+		s.Message = new(BlindedBeaconBlockEip7805)
 	}
 	offset += s.Message.SizeSSZ()
 
@@ -565,8 +565,8 @@ func (s *SignedBlindedBeaconBlockFulu) MarshalSSZTo(buf []byte) (dst []byte, err
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the SignedBlindedBeaconBlockFulu object
-func (s *SignedBlindedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the SignedBlindedBeaconBlockEip7805 object
+func (s *SignedBlindedBeaconBlockEip7805) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 100 {
@@ -595,7 +595,7 @@ func (s *SignedBlindedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
 	{
 		buf = tail[o0:]
 		if s.Message == nil {
-			s.Message = new(BlindedBeaconBlockFulu)
+			s.Message = new(BlindedBeaconBlockEip7805)
 		}
 		if err = s.Message.UnmarshalSSZ(buf); err != nil {
 			return err
@@ -604,26 +604,26 @@ func (s *SignedBlindedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the SignedBlindedBeaconBlockFulu object
-func (s *SignedBlindedBeaconBlockFulu) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the SignedBlindedBeaconBlockEip7805 object
+func (s *SignedBlindedBeaconBlockEip7805) SizeSSZ() (size int) {
 	size = 100
 
 	// Field (0) 'Message'
 	if s.Message == nil {
-		s.Message = new(BlindedBeaconBlockFulu)
+		s.Message = new(BlindedBeaconBlockEip7805)
 	}
 	size += s.Message.SizeSSZ()
 
 	return
 }
 
-// HashTreeRoot ssz hashes the SignedBlindedBeaconBlockFulu object
-func (s *SignedBlindedBeaconBlockFulu) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the SignedBlindedBeaconBlockEip7805 object
+func (s *SignedBlindedBeaconBlockEip7805) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(s)
 }
 
-// HashTreeRootWith ssz hashes the SignedBlindedBeaconBlockFulu object with a hasher
-func (s *SignedBlindedBeaconBlockFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the SignedBlindedBeaconBlockEip7805 object with a hasher
+func (s *SignedBlindedBeaconBlockEip7805) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Message'
@@ -642,13 +642,13 @@ func (s *SignedBlindedBeaconBlockFulu) HashTreeRootWith(hh *ssz.Hasher) (err err
 	return
 }
 
-// MarshalSSZ ssz marshals the BlindedBeaconBlockFulu object
-func (b *BlindedBeaconBlockFulu) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the BlindedBeaconBlockEip7805 object
+func (b *BlindedBeaconBlockEip7805) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(b)
 }
 
-// MarshalSSZTo ssz marshals the BlindedBeaconBlockFulu object to a target array
-func (b *BlindedBeaconBlockFulu) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the BlindedBeaconBlockEip7805 object to a target array
+func (b *BlindedBeaconBlockEip7805) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(84)
 
@@ -687,8 +687,8 @@ func (b *BlindedBeaconBlockFulu) MarshalSSZTo(buf []byte) (dst []byte, err error
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the BlindedBeaconBlockFulu object
-func (b *BlindedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the BlindedBeaconBlockEip7805 object
+func (b *BlindedBeaconBlockEip7805) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 84 {
@@ -738,8 +738,8 @@ func (b *BlindedBeaconBlockFulu) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the BlindedBeaconBlockFulu object
-func (b *BlindedBeaconBlockFulu) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the BlindedBeaconBlockEip7805 object
+func (b *BlindedBeaconBlockEip7805) SizeSSZ() (size int) {
 	size = 84
 
 	// Field (4) 'Body'
@@ -751,13 +751,13 @@ func (b *BlindedBeaconBlockFulu) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the BlindedBeaconBlockFulu object
-func (b *BlindedBeaconBlockFulu) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the BlindedBeaconBlockEip7805 object
+func (b *BlindedBeaconBlockEip7805) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(b)
 }
 
-// HashTreeRootWith ssz hashes the BlindedBeaconBlockFulu object with a hasher
-func (b *BlindedBeaconBlockFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the BlindedBeaconBlockEip7805 object with a hasher
+func (b *BlindedBeaconBlockEip7805) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Slot'
@@ -789,371 +789,282 @@ func (b *BlindedBeaconBlockFulu) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	return
 }
 
-// MarshalSSZ ssz marshals the DataColumnSidecar object
-func (d *DataColumnSidecar) MarshalSSZ() ([]byte, error) {
-	return ssz.MarshalSSZ(d)
+// MarshalSSZ ssz marshals the InclusionList object
+func (i *InclusionList) MarshalSSZ() ([]byte, error) {
+	return ssz.MarshalSSZ(i)
 }
 
-// MarshalSSZTo ssz marshals the DataColumnSidecar object to a target array
-func (d *DataColumnSidecar) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the InclusionList object to a target array
+func (i *InclusionList) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
-	offset := int(356)
+	offset := int(52)
 
-	// Field (0) 'ColumnIndex'
-	dst = ssz.MarshalUint64(dst, d.ColumnIndex)
+	// Field (0) 'Slot'
+	dst = ssz.MarshalUint64(dst, uint64(i.Slot))
 
-	// Offset (1) 'DataColumn'
+	// Field (1) 'ValidatorIndex'
+	dst = ssz.MarshalUint64(dst, uint64(i.ValidatorIndex))
+
+	// Field (2) 'InclusionListCommitteeRoot'
+	if size := len(i.InclusionListCommitteeRoot); size != 32 {
+		err = ssz.ErrBytesLengthFn("--.InclusionListCommitteeRoot", size, 32)
+		return
+	}
+	dst = append(dst, i.InclusionListCommitteeRoot...)
+
+	// Offset (3) 'Transactions'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(d.DataColumn) * 2048
-
-	// Offset (2) 'KzgCommitments'
-	dst = ssz.WriteOffset(dst, offset)
-	offset += len(d.KzgCommitments) * 48
-
-	// Offset (3) 'KzgProof'
-	dst = ssz.WriteOffset(dst, offset)
-	offset += len(d.KzgProof) * 48
-
-	// Field (4) 'SignedBlockHeader'
-	if d.SignedBlockHeader == nil {
-		d.SignedBlockHeader = new(SignedBeaconBlockHeader)
+	for ii := 0; ii < len(i.Transactions); ii++ {
+		offset += 4
+		offset += len(i.Transactions[ii])
 	}
-	if dst, err = d.SignedBlockHeader.MarshalSSZTo(dst); err != nil {
+
+	// Field (3) 'Transactions'
+	if size := len(i.Transactions); size > 1048576 {
+		err = ssz.ErrListTooBigFn("--.Transactions", size, 1048576)
 		return
 	}
-
-	// Field (5) 'KzgCommitmentsInclusionProof'
-	if size := len(d.KzgCommitmentsInclusionProof); size != 4 {
-		err = ssz.ErrVectorLengthFn("--.KzgCommitmentsInclusionProof", size, 4)
-		return
+	{
+		offset = 4 * len(i.Transactions)
+		for ii := 0; ii < len(i.Transactions); ii++ {
+			dst = ssz.WriteOffset(dst, offset)
+			offset += len(i.Transactions[ii])
+		}
 	}
-	for ii := 0; ii < 4; ii++ {
-		if size := len(d.KzgCommitmentsInclusionProof[ii]); size != 32 {
-			err = ssz.ErrBytesLengthFn("--.KzgCommitmentsInclusionProof[ii]", size, 32)
+	for ii := 0; ii < len(i.Transactions); ii++ {
+		if size := len(i.Transactions[ii]); size > 1073741824 {
+			err = ssz.ErrBytesLengthFn("--.Transactions[ii]", size, 1073741824)
 			return
 		}
-		dst = append(dst, d.KzgCommitmentsInclusionProof[ii]...)
-	}
-
-	// Field (1) 'DataColumn'
-	if size := len(d.DataColumn); size > 4096 {
-		err = ssz.ErrListTooBigFn("--.DataColumn", size, 4096)
-		return
-	}
-	for ii := 0; ii < len(d.DataColumn); ii++ {
-		if size := len(d.DataColumn[ii]); size != 2048 {
-			err = ssz.ErrBytesLengthFn("--.DataColumn[ii]", size, 2048)
-			return
-		}
-		dst = append(dst, d.DataColumn[ii]...)
-	}
-
-	// Field (2) 'KzgCommitments'
-	if size := len(d.KzgCommitments); size > 4096 {
-		err = ssz.ErrListTooBigFn("--.KzgCommitments", size, 4096)
-		return
-	}
-	for ii := 0; ii < len(d.KzgCommitments); ii++ {
-		if size := len(d.KzgCommitments[ii]); size != 48 {
-			err = ssz.ErrBytesLengthFn("--.KzgCommitments[ii]", size, 48)
-			return
-		}
-		dst = append(dst, d.KzgCommitments[ii]...)
-	}
-
-	// Field (3) 'KzgProof'
-	if size := len(d.KzgProof); size > 4096 {
-		err = ssz.ErrListTooBigFn("--.KzgProof", size, 4096)
-		return
-	}
-	for ii := 0; ii < len(d.KzgProof); ii++ {
-		if size := len(d.KzgProof[ii]); size != 48 {
-			err = ssz.ErrBytesLengthFn("--.KzgProof[ii]", size, 48)
-			return
-		}
-		dst = append(dst, d.KzgProof[ii]...)
+		dst = append(dst, i.Transactions[ii]...)
 	}
 
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the DataColumnSidecar object
-func (d *DataColumnSidecar) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the InclusionList object
+func (i *InclusionList) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
-	if size < 356 {
+	if size < 52 {
 		return ssz.ErrSize
 	}
 
 	tail := buf
-	var o1, o2, o3 uint64
+	var o3 uint64
 
-	// Field (0) 'ColumnIndex'
-	d.ColumnIndex = ssz.UnmarshallUint64(buf[0:8])
+	// Field (0) 'Slot'
+	i.Slot = github_com_prysmaticlabs_prysm_v5_consensus_types_primitives.Slot(ssz.UnmarshallUint64(buf[0:8]))
 
-	// Offset (1) 'DataColumn'
-	if o1 = ssz.ReadOffset(buf[8:12]); o1 > size {
+	// Field (1) 'ValidatorIndex'
+	i.ValidatorIndex = github_com_prysmaticlabs_prysm_v5_consensus_types_primitives.ValidatorIndex(ssz.UnmarshallUint64(buf[8:16]))
+
+	// Field (2) 'InclusionListCommitteeRoot'
+	if cap(i.InclusionListCommitteeRoot) == 0 {
+		i.InclusionListCommitteeRoot = make([]byte, 0, len(buf[16:48]))
+	}
+	i.InclusionListCommitteeRoot = append(i.InclusionListCommitteeRoot, buf[16:48]...)
+
+	// Offset (3) 'Transactions'
+	if o3 = ssz.ReadOffset(buf[48:52]); o3 > size {
 		return ssz.ErrOffset
 	}
 
-	if o1 != 356 {
+	if o3 != 52 {
 		return ssz.ErrInvalidVariableOffset
 	}
 
-	// Offset (2) 'KzgCommitments'
-	if o2 = ssz.ReadOffset(buf[12:16]); o2 > size || o1 > o2 {
-		return ssz.ErrOffset
-	}
-
-	// Offset (3) 'KzgProof'
-	if o3 = ssz.ReadOffset(buf[16:20]); o3 > size || o2 > o3 {
-		return ssz.ErrOffset
-	}
-
-	// Field (4) 'SignedBlockHeader'
-	if d.SignedBlockHeader == nil {
-		d.SignedBlockHeader = new(SignedBeaconBlockHeader)
-	}
-	if err = d.SignedBlockHeader.UnmarshalSSZ(buf[20:228]); err != nil {
-		return err
-	}
-
-	// Field (5) 'KzgCommitmentsInclusionProof'
-	d.KzgCommitmentsInclusionProof = make([][]byte, 4)
-	for ii := 0; ii < 4; ii++ {
-		if cap(d.KzgCommitmentsInclusionProof[ii]) == 0 {
-			d.KzgCommitmentsInclusionProof[ii] = make([]byte, 0, len(buf[228:356][ii*32:(ii+1)*32]))
-		}
-		d.KzgCommitmentsInclusionProof[ii] = append(d.KzgCommitmentsInclusionProof[ii], buf[228:356][ii*32:(ii+1)*32]...)
-	}
-
-	// Field (1) 'DataColumn'
-	{
-		buf = tail[o1:o2]
-		num, err := ssz.DivideInt2(len(buf), 2048, 4096)
-		if err != nil {
-			return err
-		}
-		d.DataColumn = make([][]byte, num)
-		for ii := 0; ii < num; ii++ {
-			if cap(d.DataColumn[ii]) == 0 {
-				d.DataColumn[ii] = make([]byte, 0, len(buf[ii*2048:(ii+1)*2048]))
-			}
-			d.DataColumn[ii] = append(d.DataColumn[ii], buf[ii*2048:(ii+1)*2048]...)
-		}
-	}
-
-	// Field (2) 'KzgCommitments'
-	{
-		buf = tail[o2:o3]
-		num, err := ssz.DivideInt2(len(buf), 48, 4096)
-		if err != nil {
-			return err
-		}
-		d.KzgCommitments = make([][]byte, num)
-		for ii := 0; ii < num; ii++ {
-			if cap(d.KzgCommitments[ii]) == 0 {
-				d.KzgCommitments[ii] = make([]byte, 0, len(buf[ii*48:(ii+1)*48]))
-			}
-			d.KzgCommitments[ii] = append(d.KzgCommitments[ii], buf[ii*48:(ii+1)*48]...)
-		}
-	}
-
-	// Field (3) 'KzgProof'
+	// Field (3) 'Transactions'
 	{
 		buf = tail[o3:]
-		num, err := ssz.DivideInt2(len(buf), 48, 4096)
+		num, err := ssz.DecodeDynamicLength(buf, 1048576)
 		if err != nil {
 			return err
 		}
-		d.KzgProof = make([][]byte, num)
-		for ii := 0; ii < num; ii++ {
-			if cap(d.KzgProof[ii]) == 0 {
-				d.KzgProof[ii] = make([]byte, 0, len(buf[ii*48:(ii+1)*48]))
+		i.Transactions = make([][]byte, num)
+		err = ssz.UnmarshalDynamic(buf, num, func(indx int, buf []byte) (err error) {
+			if len(buf) > 1073741824 {
+				return ssz.ErrBytesLength
 			}
-			d.KzgProof[ii] = append(d.KzgProof[ii], buf[ii*48:(ii+1)*48]...)
+			if cap(i.Transactions[indx]) == 0 {
+				i.Transactions[indx] = make([]byte, 0, len(buf))
+			}
+			i.Transactions[indx] = append(i.Transactions[indx], buf...)
+			return nil
+		})
+		if err != nil {
+			return err
 		}
 	}
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the DataColumnSidecar object
-func (d *DataColumnSidecar) SizeSSZ() (size int) {
-	size = 356
+// SizeSSZ returns the ssz encoded size in bytes for the InclusionList object
+func (i *InclusionList) SizeSSZ() (size int) {
+	size = 52
 
-	// Field (1) 'DataColumn'
-	size += len(d.DataColumn) * 2048
-
-	// Field (2) 'KzgCommitments'
-	size += len(d.KzgCommitments) * 48
-
-	// Field (3) 'KzgProof'
-	size += len(d.KzgProof) * 48
+	// Field (3) 'Transactions'
+	for ii := 0; ii < len(i.Transactions); ii++ {
+		size += 4
+		size += len(i.Transactions[ii])
+	}
 
 	return
 }
 
-// HashTreeRoot ssz hashes the DataColumnSidecar object
-func (d *DataColumnSidecar) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(d)
+// HashTreeRoot ssz hashes the InclusionList object
+func (i *InclusionList) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(i)
 }
 
-// HashTreeRootWith ssz hashes the DataColumnSidecar object with a hasher
-func (d *DataColumnSidecar) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the InclusionList object with a hasher
+func (i *InclusionList) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
-	// Field (0) 'ColumnIndex'
-	hh.PutUint64(d.ColumnIndex)
+	// Field (0) 'Slot'
+	hh.PutUint64(uint64(i.Slot))
 
-	// Field (1) 'DataColumn'
-	{
-		if size := len(d.DataColumn); size > 4096 {
-			err = ssz.ErrListTooBigFn("--.DataColumn", size, 4096)
-			return
-		}
-		subIndx := hh.Index()
-		for _, i := range d.DataColumn {
-			if len(i) != 2048 {
-				err = ssz.ErrBytesLength
-				return
-			}
-			hh.PutBytes(i)
-		}
+	// Field (1) 'ValidatorIndex'
+	hh.PutUint64(uint64(i.ValidatorIndex))
 
-		numItems := uint64(len(d.DataColumn))
-		hh.MerkleizeWithMixin(subIndx, numItems, 4096)
-	}
-
-	// Field (2) 'KzgCommitments'
-	{
-		if size := len(d.KzgCommitments); size > 4096 {
-			err = ssz.ErrListTooBigFn("--.KzgCommitments", size, 4096)
-			return
-		}
-		subIndx := hh.Index()
-		for _, i := range d.KzgCommitments {
-			if len(i) != 48 {
-				err = ssz.ErrBytesLength
-				return
-			}
-			hh.PutBytes(i)
-		}
-
-		numItems := uint64(len(d.KzgCommitments))
-		hh.MerkleizeWithMixin(subIndx, numItems, 4096)
-	}
-
-	// Field (3) 'KzgProof'
-	{
-		if size := len(d.KzgProof); size > 4096 {
-			err = ssz.ErrListTooBigFn("--.KzgProof", size, 4096)
-			return
-		}
-		subIndx := hh.Index()
-		for _, i := range d.KzgProof {
-			if len(i) != 48 {
-				err = ssz.ErrBytesLength
-				return
-			}
-			hh.PutBytes(i)
-		}
-
-		numItems := uint64(len(d.KzgProof))
-		hh.MerkleizeWithMixin(subIndx, numItems, 4096)
-	}
-
-	// Field (4) 'SignedBlockHeader'
-	if err = d.SignedBlockHeader.HashTreeRootWith(hh); err != nil {
+	// Field (2) 'InclusionListCommitteeRoot'
+	if size := len(i.InclusionListCommitteeRoot); size != 32 {
+		err = ssz.ErrBytesLengthFn("--.InclusionListCommitteeRoot", size, 32)
 		return
 	}
+	hh.PutBytes(i.InclusionListCommitteeRoot)
 
-	// Field (5) 'KzgCommitmentsInclusionProof'
+	// Field (3) 'Transactions'
 	{
-		if size := len(d.KzgCommitmentsInclusionProof); size != 4 {
-			err = ssz.ErrVectorLengthFn("--.KzgCommitmentsInclusionProof", size, 4)
+		subIndx := hh.Index()
+		num := uint64(len(i.Transactions))
+		if num > 1048576 {
+			err = ssz.ErrIncorrectListSize
 			return
 		}
-		subIndx := hh.Index()
-		for _, i := range d.KzgCommitmentsInclusionProof {
-			if len(i) != 32 {
-				err = ssz.ErrBytesLength
-				return
+		for _, elem := range i.Transactions {
+			{
+				elemIndx := hh.Index()
+				byteLen := uint64(len(elem))
+				if byteLen > 1073741824 {
+					err = ssz.ErrIncorrectListSize
+					return
+				}
+				hh.AppendBytes32(elem)
+				hh.MerkleizeWithMixin(elemIndx, byteLen, (1073741824+31)/32)
 			}
-			hh.Append(i)
 		}
-		hh.Merkleize(subIndx)
+		hh.MerkleizeWithMixin(subIndx, num, 1048576)
 	}
 
 	hh.Merkleize(indx)
 	return
 }
 
-// MarshalSSZ ssz marshals the DataColumnIdentifier object
-func (d *DataColumnIdentifier) MarshalSSZ() ([]byte, error) {
-	return ssz.MarshalSSZ(d)
+// MarshalSSZ ssz marshals the SignedInclusionList object
+func (s *SignedInclusionList) MarshalSSZ() ([]byte, error) {
+	return ssz.MarshalSSZ(s)
 }
 
-// MarshalSSZTo ssz marshals the DataColumnIdentifier object to a target array
-func (d *DataColumnIdentifier) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the SignedInclusionList object to a target array
+func (s *SignedInclusionList) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
+	offset := int(100)
 
-	// Field (0) 'BlockRoot'
-	if size := len(d.BlockRoot); size != 32 {
-		err = ssz.ErrBytesLengthFn("--.BlockRoot", size, 32)
+	// Offset (0) 'Message'
+	dst = ssz.WriteOffset(dst, offset)
+	if s.Message == nil {
+		s.Message = new(InclusionList)
+	}
+	offset += s.Message.SizeSSZ()
+
+	// Field (1) 'Signature'
+	if size := len(s.Signature); size != 96 {
+		err = ssz.ErrBytesLengthFn("--.Signature", size, 96)
 		return
 	}
-	dst = append(dst, d.BlockRoot...)
+	dst = append(dst, s.Signature...)
 
-	// Field (1) 'ColumnIndex'
-	dst = ssz.MarshalUint64(dst, d.ColumnIndex)
+	// Field (0) 'Message'
+	if dst, err = s.Message.MarshalSSZTo(dst); err != nil {
+		return
+	}
 
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the DataColumnIdentifier object
-func (d *DataColumnIdentifier) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the SignedInclusionList object
+func (s *SignedInclusionList) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
-	if size != 40 {
+	if size < 100 {
 		return ssz.ErrSize
 	}
 
-	// Field (0) 'BlockRoot'
-	if cap(d.BlockRoot) == 0 {
-		d.BlockRoot = make([]byte, 0, len(buf[0:32]))
+	tail := buf
+	var o0 uint64
+
+	// Offset (0) 'Message'
+	if o0 = ssz.ReadOffset(buf[0:4]); o0 > size {
+		return ssz.ErrOffset
 	}
-	d.BlockRoot = append(d.BlockRoot, buf[0:32]...)
 
-	// Field (1) 'ColumnIndex'
-	d.ColumnIndex = ssz.UnmarshallUint64(buf[32:40])
+	if o0 != 100 {
+		return ssz.ErrInvalidVariableOffset
+	}
 
+	// Field (1) 'Signature'
+	if cap(s.Signature) == 0 {
+		s.Signature = make([]byte, 0, len(buf[4:100]))
+	}
+	s.Signature = append(s.Signature, buf[4:100]...)
+
+	// Field (0) 'Message'
+	{
+		buf = tail[o0:]
+		if s.Message == nil {
+			s.Message = new(InclusionList)
+		}
+		if err = s.Message.UnmarshalSSZ(buf); err != nil {
+			return err
+		}
+	}
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the DataColumnIdentifier object
-func (d *DataColumnIdentifier) SizeSSZ() (size int) {
-	size = 40
+// SizeSSZ returns the ssz encoded size in bytes for the SignedInclusionList object
+func (s *SignedInclusionList) SizeSSZ() (size int) {
+	size = 100
+
+	// Field (0) 'Message'
+	if s.Message == nil {
+		s.Message = new(InclusionList)
+	}
+	size += s.Message.SizeSSZ()
+
 	return
 }
 
-// HashTreeRoot ssz hashes the DataColumnIdentifier object
-func (d *DataColumnIdentifier) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(d)
+// HashTreeRoot ssz hashes the SignedInclusionList object
+func (s *SignedInclusionList) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(s)
 }
 
-// HashTreeRootWith ssz hashes the DataColumnIdentifier object with a hasher
-func (d *DataColumnIdentifier) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+// HashTreeRootWith ssz hashes the SignedInclusionList object with a hasher
+func (s *SignedInclusionList) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
-	// Field (0) 'BlockRoot'
-	if size := len(d.BlockRoot); size != 32 {
-		err = ssz.ErrBytesLengthFn("--.BlockRoot", size, 32)
+	// Field (0) 'Message'
+	if err = s.Message.HashTreeRootWith(hh); err != nil {
 		return
 	}
-	hh.PutBytes(d.BlockRoot)
 
-	// Field (1) 'ColumnIndex'
-	hh.PutUint64(d.ColumnIndex)
+	// Field (1) 'Signature'
+	if size := len(s.Signature); size != 96 {
+		err = ssz.ErrBytesLengthFn("--.Signature", size, 96)
+		return
+	}
+	hh.PutBytes(s.Signature)
 
 	hh.Merkleize(indx)
 	return

@@ -164,9 +164,11 @@ func HackForksMaxuint(t *testing.T, forksVersion []int) func() {
 	for _, forkVersion := range forksVersion {
 		switch forkVersion {
 		case version.Electra:
-			bc.ElectraForkEpoch = math.MaxUint32 - 1
+			bc.ElectraForkEpoch = math.MaxUint32 - 2
 		case version.Fulu:
-			bc.FuluForkEpoch = math.MaxUint32
+			bc.FuluForkEpoch = math.MaxUint32 - 1
+		case version.Eip7805:
+			bc.Eip7805ForkEpoch = math.MaxUint32
 		default:
 			t.Fatalf("unsupported fork version %d", forkVersion)
 		}

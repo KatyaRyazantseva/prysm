@@ -154,6 +154,12 @@ func (v *validator) ProposeBlock(ctx context.Context, slot primitives.Slot, pubK
 				log.WithError(err).Error("Failed to build generic signed block")
 				return
 			}
+		case version.Eip7805:
+			genericSignedBlock, err = buildGenericSignedBlockEip7805WithBlobs(pb, b)
+			if err != nil {
+				log.WithError(err).Error("Failed to build generic signed block")
+				return
+			}
 		default:
 			log.Errorf("Unsupported block version %s", version.String(blk.Version()))
 		}
@@ -287,6 +293,22 @@ func buildGenericSignedBlockFuluWithBlobs(pb proto.Message, b *ethpb.GenericBeac
 				Block:     fuluBlock,
 				KzgProofs: b.GetFulu().KzgProofs,
 				Blobs:     b.GetFulu().Blobs,
+			},
+		},
+	}, nil
+}
+
+func buildGenericSignedBlockEip7805WithBlobs(pb proto.Message, b *ethpb.GenericBeaconBlock) (*ethpb.GenericSignedBeaconBlock, error) {
+	eip7805Block, ok := pb.(*ethpb.SignedBeaconBlockEip7805)
+	if !ok {
+		return nil, errors.New("could cast to eip7805 block")
+	}
+	return &ethpb.GenericSignedBeaconBlock{
+		Block: &ethpb.GenericSignedBeaconBlock_Eip7805{
+			Eip7805: &ethpb.SignedBeaconBlockContentsEip7805{
+				Block:     eip7805Block,
+				KzgProofs: b.GetEip7805().KzgProofs,
+				Blobs:     b.GetEip7805().Blobs,
 			},
 		},
 	}, nil

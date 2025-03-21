@@ -31,6 +31,7 @@ func TestGossipTopicMappings_CorrectType(t *testing.T) {
 	denebForkEpoch := primitives.Epoch(400)
 	electraForkEpoch := primitives.Epoch(500)
 	fuluForkEpoch := primitives.Epoch(600)
+	eip7805ForkEpoch := primitives.Epoch(700)
 
 	bCfg.AltairForkEpoch = altairForkEpoch
 	bCfg.BellatrixForkEpoch = bellatrixForkEpoch
@@ -38,12 +39,14 @@ func TestGossipTopicMappings_CorrectType(t *testing.T) {
 	bCfg.DenebForkEpoch = denebForkEpoch
 	bCfg.ElectraForkEpoch = electraForkEpoch
 	bCfg.FuluForkEpoch = fuluForkEpoch
+	bCfg.Eip7805ForkEpoch = eip7805ForkEpoch
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.AltairForkVersion)] = primitives.Epoch(100)
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.BellatrixForkVersion)] = primitives.Epoch(200)
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.CapellaForkVersion)] = primitives.Epoch(300)
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.DenebForkVersion)] = primitives.Epoch(400)
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.ElectraForkVersion)] = primitives.Epoch(500)
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.FuluForkVersion)] = primitives.Epoch(600)
+	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.Eip7805ForkVersion)] = primitives.Epoch(700)
 	params.OverrideBeaconConfig(bCfg)
 
 	// Phase 0
@@ -128,5 +131,13 @@ func TestGossipTopicMappings_CorrectType(t *testing.T) {
 	assert.Equal(t, true, ok)
 	pMessage = GossipTopicMappings(AggregateAndProofSubnetTopicFormat, electraForkEpoch)
 	_, ok = pMessage.(*ethpb.SignedAggregateAttestationAndProofElectra)
+	assert.Equal(t, true, ok)
+
+	// Eip7805 Fork
+	pMessage = GossipTopicMappings(BlockSubnetTopicFormat, eip7805ForkEpoch)
+	_, ok = pMessage.(*ethpb.SignedBeaconBlockEip7805)
+	assert.Equal(t, true, ok)
+	pMessage = GossipTopicMappings(InclusionListTopicFormat, eip7805ForkEpoch)
+	_, ok = pMessage.(*ethpb.SignedInclusionList)
 	assert.Equal(t, true, ok)
 }

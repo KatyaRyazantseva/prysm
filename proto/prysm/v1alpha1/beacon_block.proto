@@ -69,6 +69,12 @@ message GenericSignedBeaconBlock {
 
     // Representing a signed, post-Fulu fork blinded beacon block.
     SignedBlindedBeaconBlockFulu blinded_fulu = 12;
+
+    // Representing a signed, post-Eip7805 beacon block content.
+    SignedBeaconBlockContentsEip7805 eip7805 = 13;
+
+    // Representing a signed, post-Eip7805 fork blinded beacon block.
+    SignedBlindedBeaconBlockEip7805 blinded_eip7805 = 14;
   }
   bool is_blinded = 100;
   reserved 101; // Deprecated fields
@@ -111,6 +117,12 @@ message GenericBeaconBlock {
 
     // Representing a post-Fulu fork blinded beacon block.
     BlindedBeaconBlockFulu blinded_fulu = 12;
+
+    // Representing a post-Eip7805 fork beacon block content.
+    BeaconBlockContentsEip7805 eip7805 = 13;
+
+    // Representing a post-Eip7805 fork blinded beacon block.
+    BlindedBeaconBlockEip7805 blinded_eip7805 = 14;
   }
   bool is_blinded = 100;
   string payload_value = 101;
@@ -1243,3 +1255,68 @@ message BlindedBeaconBlockFulu {
   BlindedBeaconBlockBodyElectra body = 5;
 }
 
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+message SignedBeaconBlockContentsEip7805 {
+  SignedBeaconBlockEip7805 block = 1;
+  repeated bytes kzg_proofs = 2 [
+    (ethereum.eth.ext.ssz_size) = "?,48",
+    (ethereum.eth.ext.ssz_max) = "4096"
+  ];
+  repeated bytes blobs = 3 [
+    (ethereum.eth.ext.ssz_size) = "?,blob.size",
+    (ethereum.eth.ext.ssz_max) = "4096"
+  ];
+}
+
+message SignedBeaconBlockEip7805 {
+  // The unsigned beacon block itself.
+  BeaconBlockElectra block = 1;
+
+  // 96 byte BLS signature from the validator that produced this block.
+  bytes signature = 2 [ (ethereum.eth.ext.ssz_size) = "96" ];
+}
+
+message BeaconBlockContentsEip7805 {
+  BeaconBlockElectra block = 1;
+  repeated bytes kzg_proofs = 2 [
+    (ethereum.eth.ext.ssz_size) = "?,48",
+    (ethereum.eth.ext.ssz_max) = "4096"
+  ];
+  repeated bytes blobs = 3 [
+    (ethereum.eth.ext.ssz_size) = "?,blob.size",
+    (ethereum.eth.ext.ssz_max) = "4096"
+  ];
+}
+
+message SignedBlindedBeaconBlockEip7805 {
+  // The unsigned blinded beacon block itself.
+  BlindedBeaconBlockEip7805 message = 1;
+
+  // 96 byte BLS signature from the validator that produced this blinded block.
+  bytes signature = 2 [ (ethereum.eth.ext.ssz_size) = "96" ];
+}
+
+message BlindedBeaconBlockEip7805 {
+  // Beacon chain slot that this blinded block represents.
+  uint64 slot = 1 [
+    (ethereum.eth.ext.cast_type) =
+        "github.com/prysmaticlabs/prysm/v5/consensus-types/primitives.Slot"
+  ];
+
+  // Validator index of the validator that proposed the block header.
+  uint64 proposer_index = 2 [ (ethereum.eth.ext.cast_type) =
+                                  "github.com/prysmaticlabs/prysm/v5/"
+                                  "consensus-types/primitives.ValidatorIndex" ];
+
+  // 32 byte root of the parent block.
+  bytes parent_root = 3 [ (ethereum.eth.ext.ssz_size) = "32" ];
+
+  // 32 byte root of the resulting state after processing this blinded block.
+  bytes state_root = 4 [ (ethereum.eth.ext.ssz_size) = "32" ];
+
+  // The blinded beacon block body.
+  BlindedBeaconBlockBodyElectra body = 5;
+}

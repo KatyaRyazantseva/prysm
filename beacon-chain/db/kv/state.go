@@ -517,6 +517,19 @@ func (s *Store) unmarshalState(_ context.Context, enc []byte, validatorEntries [
 	}
 
 	switch {
+	case hasEip7805Key(enc):
+		protoState := &ethpb.BeaconStateElectra{}
+		if err := protoState.UnmarshalSSZ(enc[len(eip7805Key):]); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal encoding for Eip7805")
+		}
+		ok, err := s.isStateValidatorMigrationOver()
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			protoState.Validators = validatorEntries
+		}
+		return statenative.InitializeFromProtoUnsafeEip7805(protoState)
 	case hasFuluKey(enc):
 		protoState := &ethpb.BeaconStateElectra{}
 		if err := protoState.UnmarshalSSZ(enc[len(fuluKey):]); err != nil {

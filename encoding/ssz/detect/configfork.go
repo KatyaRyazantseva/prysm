@@ -91,7 +91,7 @@ func FromForkVersion(cv [fieldparams.VersionLength]byte) (*VersionedUnmarshaler,
 	case bytesutil.ToBytes4(cfg.FuluForkVersion):
 		fork = version.Fulu
 	case bytesutil.ToBytes4(cfg.Eip7805ForkVersion):
-		fork = version.Focil
+		fork = version.Eip7805
 	default:
 		return nil, errors.Wrapf(ErrForkNotFound, "version=%#x", cv)
 	}
@@ -167,13 +167,23 @@ func (cf *VersionedUnmarshaler) UnmarshalBeaconState(marshaled []byte) (s state.
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to init state trie from state, detected fork=%s", forkName)
 		}
-	case version.Fulu, version.Focil:
+	case version.Fulu:
 		st := &ethpb.BeaconStateElectra{}
 		err = st.UnmarshalSSZ(marshaled)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to unmarshal state, detected fork=%s", forkName)
 		}
 		s, err = state_native.InitializeFromProtoUnsafeFulu(st)
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to init state trie from state, detected fork=%s", forkName)
+		}
+	case version.Eip7805:
+		st := &ethpb.BeaconStateElectra{}
+		err = st.UnmarshalSSZ(marshaled)
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to unmarshal state, detected fork=%s", forkName)
+		}
+		s, err = state_native.InitializeFromProtoUnsafeEip7805(st)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to init state trie from state, detected fork=%s", forkName)
 		}
@@ -227,8 +237,10 @@ func (cf *VersionedUnmarshaler) UnmarshalBeaconBlock(marshaled []byte) (interfac
 		blk = &ethpb.SignedBeaconBlockDeneb{}
 	case version.Electra:
 		blk = &ethpb.SignedBeaconBlockElectra{}
-	case version.Fulu, version.Focil:
+	case version.Fulu:
 		blk = &ethpb.SignedBeaconBlockFulu{}
+	case version.Eip7805:
+		blk = &ethpb.SignedBeaconBlockEip7805{}
 	default:
 		forkName := version.String(cf.Fork)
 		return nil, fmt.Errorf("unable to initialize ReadOnlyBeaconBlock for fork version=%s at slot=%d", forkName, slot)
@@ -266,8 +278,10 @@ func (cf *VersionedUnmarshaler) UnmarshalBlindedBeaconBlock(marshaled []byte) (i
 		blk = &ethpb.SignedBlindedBeaconBlockDeneb{}
 	case version.Electra:
 		blk = &ethpb.SignedBlindedBeaconBlockElectra{}
-	case version.Fulu, version.Focil:
+	case version.Fulu:
 		blk = &ethpb.SignedBlindedBeaconBlockFulu{}
+	case version.Eip7805:
+		blk = &ethpb.SignedBlindedBeaconBlockEip7805{}
 	default:
 		forkName := version.String(cf.Fork)
 		return nil, fmt.Errorf("unable to initialize ReadOnlyBeaconBlock for fork version=%s at slot=%d", forkName, slot)
@@ -290,7 +304,7 @@ func (cf *VersionedUnmarshaler) validateVersion(slot primitives.Slot) error {
 		return err
 	}
 	if ver != cf.Version {
-		return errors.Wrapf(errBlockForkMismatch, "slot=%d, epoch=%d, version=%#x", slot, epoch, ver)
+		return errors.Wrapf(errBlockForkMismatch, "slot=%d, epoch=%d, expected version=%#x, got version=%#x", slot, epoch, cf.Version, ver)
 	}
 	return nil
 }

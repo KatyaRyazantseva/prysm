@@ -209,6 +209,28 @@ func processBlockResponse(ver string, isBlinded bool, decoder *json.Decoder) (*e
 			}
 			response = genericBlock
 		}
+	case version.String(version.Eip7805):
+		if isBlinded {
+			jsonEip7805Block := structs.BlindedBeaconBlockEip7805{}
+			if err := decoder.Decode(&jsonEip7805Block); err != nil {
+				return nil, errors.Wrap(err, "failed to decode blinded eip7805 block response json")
+			}
+			genericBlock, err := jsonEip7805Block.ToGeneric()
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get blinded eip7805 block")
+			}
+			response = genericBlock
+		} else {
+			jsonEip7805BlockContents := structs.BeaconBlockContentsEip7805{}
+			if err := decoder.Decode(&jsonEip7805BlockContents); err != nil {
+				return nil, errors.Wrap(err, "failed to decode eip7805 block response json")
+			}
+			genericBlock, err := jsonEip7805BlockContents.ToGeneric()
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get eip7805 block")
+			}
+			response = genericBlock
+		}
 	default:
 		return nil, errors.Errorf("unsupported consensus version `%s`", ver)
 	}

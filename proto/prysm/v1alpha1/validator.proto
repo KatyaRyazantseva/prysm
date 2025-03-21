@@ -24,7 +24,7 @@ import "proto/eth/ext/options.proto";
 import "proto/prysm/v1alpha1/beacon_block.proto";
 import "proto/prysm/v1alpha1/sync_committee.proto";
 import "proto/prysm/v1alpha1/attestation.proto";
-import "proto/prysm/v1alpha1/focil.proto";
+import "proto/prysm/v1alpha1/eip7805.proto";
 
 option csharp_namespace = "Ethereum.Eth.V1";
 option go_package = "github.com/prysmaticlabs/prysm/v5/proto/prysm/v1alpha1;eth";
@@ -485,6 +485,9 @@ message StreamBlocksResponse {
 
     // Representing a fulu block.
     SignedBeaconBlockFulu fulu_block = 7;
+
+    // Representing an eip7805 block.
+    SignedBeaconBlockEip7805 eip7805_block = 8;
   }
 }
 

@@ -916,6 +916,16 @@ func unmarshalBlock(_ context.Context, enc []byte) (interfaces.ReadOnlySignedBea
 		if err := rawBlock.UnmarshalSSZ(enc[len(fuluBlindKey):]); err != nil {
 			return nil, errors.Wrap(err, "could not unmarshal blinded Fulu block")
 		}
+	case hasEip7805Key(enc):
+		rawBlock = &ethpb.SignedBeaconBlockEip7805{}
+		if err := rawBlock.UnmarshalSSZ(enc[len(eip7805Key):]); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal Eip7805 block")
+		}
+	case hasEip7805BlindKey(enc):
+		rawBlock = &ethpb.SignedBlindedBeaconBlockEip7805{}
+		if err := rawBlock.UnmarshalSSZ(enc[len(eip7805BlindKey):]); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal blinded Eip7805 block")
+		}
 	default:
 		// Marshal block bytes to phase 0 beacon block.
 		rawBlock = &ethpb.SignedBeaconBlock{}

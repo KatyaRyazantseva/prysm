@@ -7,7 +7,7 @@ import "proto/eth/ext/options.proto";
 option csharp_namespace = "Ethereum.Eth.v1alpha1";
 option go_package = "github.com/prysmaticlabs/prysm/v5/proto/prysm/v1alpha1;eth";
 option java_multiple_files = true;
-option java_outer_classname = "FOCILProto";
+option java_outer_classname = "Eip7805Proto";
 option java_package = "org.ethereum.eth.v1alpha1";
 option php_namespace = "Ethereum\\Eth\\v1alpha1";
 

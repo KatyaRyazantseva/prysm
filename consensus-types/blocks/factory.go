@@ -82,6 +82,14 @@ func NewSignedBeaconBlock(i interface{}) (interfaces.SignedBeaconBlock, error) {
 		return initBlindedSignedBlockFromProtoFulu(b)
 	case *eth.GenericSignedBeaconBlock_BlindedFulu:
 		return initBlindedSignedBlockFromProtoFulu(b.BlindedFulu)
+	case *eth.GenericSignedBeaconBlock_Eip7805:
+		return initSignedBlockFromProtoEip7805(b.Eip7805.Block)
+	case *eth.SignedBeaconBlockEip7805:
+		return initSignedBlockFromProtoEip7805(b)
+	case *eth.SignedBlindedBeaconBlockEip7805:
+		return initBlindedSignedBlockFromProtoEip7805(b)
+	case *eth.GenericSignedBeaconBlock_BlindedEip7805:
+		return initBlindedSignedBlockFromProtoEip7805(b.BlindedEip7805)
 	default:
 		return nil, errors.Wrapf(ErrUnsupportedSignedBeaconBlock, "unable to create block from type %T", i)
 	}
@@ -138,6 +146,12 @@ func NewBeaconBlock(i interface{}) (interfaces.ReadOnlyBeaconBlock, error) {
 		return initBlindedBlockFromProtoFulu(b)
 	case *eth.GenericBeaconBlock_BlindedFulu:
 		return initBlindedBlockFromProtoFulu(b.BlindedFulu)
+	case *eth.GenericBeaconBlock_Eip7805:
+		return initBlockFromProtoEip7805(b.Eip7805.Block)
+	case *eth.BlindedBeaconBlockEip7805:
+		return initBlindedBlockFromProtoEip7805(b)
+	case *eth.GenericBeaconBlock_BlindedEip7805:
+		return initBlindedBlockFromProtoEip7805(b.BlindedEip7805)
 	default:
 		return nil, errors.Wrapf(errUnsupportedBeaconBlock, "unable to create block from type %T", i)
 	}
@@ -260,6 +274,19 @@ func BuildSignedBeaconBlock(blk interfaces.ReadOnlyBeaconBlock, signature []byte
 			return nil, errIncorrectBlockVersion
 		}
 		return NewSignedBeaconBlock(&eth.SignedBeaconBlockFulu{Block: pb, Signature: signature})
+	case version.Eip7805:
+		if blk.IsBlinded() {
+			pb, ok := pb.(*eth.BlindedBeaconBlockEip7805)
+			if !ok {
+				return nil, errIncorrectBlockVersion
+			}
+			return NewSignedBeaconBlock(&eth.SignedBlindedBeaconBlockEip7805{Message: pb, Signature: signature})
+		}
+		pb, ok := pb.(*eth.BeaconBlockElectra)
+		if !ok {
+			return nil, errIncorrectBlockVersion
+		}
+		return NewSignedBeaconBlock(&eth.SignedBeaconBlockEip7805{Block: pb, Signature: signature})
 	default:
 		return nil, errUnsupportedBeaconBlock
 	}
@@ -606,6 +633,71 @@ func BuildSignedBeaconBlockFromExecutionPayload(blk interfaces.ReadOnlySignedBea
 		}
 
 		fullBlock = &eth.SignedBeaconBlockFulu{
+			Block: &eth.BeaconBlockElectra{
+				Slot:          b.Slot(),
+				ProposerIndex: b.ProposerIndex(),
+				ParentRoot:    parentRoot[:],
+				StateRoot:     stateRoot[:],
+				Body: &eth.BeaconBlockBodyElectra{
+					RandaoReveal:          randaoReveal[:],
+					Eth1Data:              b.Body().Eth1Data(),
+					Graffiti:              graffiti[:],
+					ProposerSlashings:     b.Body().ProposerSlashings(),
+					AttesterSlashings:     attSlashings,
+					Attestations:          atts,
+					Deposits:              b.Body().Deposits(),
+					VoluntaryExits:        b.Body().VoluntaryExits(),
+					SyncAggregate:         syncAgg,
+					ExecutionPayload:      p,
+					BlsToExecutionChanges: blsToExecutionChanges,
+					BlobKzgCommitments:    commitments,
+					ExecutionRequests:     er,
+				},
+			},
+			Signature: sig[:],
+		}
+	case version.Eip7805:
+		p, ok := payload.(*enginev1.ExecutionPayloadDeneb)
+		if !ok {
+			return nil, fmt.Errorf("payload has wrong type (expected %T, got %T)", &enginev1.ExecutionPayloadDeneb{}, payload)
+		}
+		blsToExecutionChanges, err := b.Body().BLSToExecutionChanges()
+		if err != nil {
+			return nil, err
+		}
+		commitments, err := b.Body().BlobKzgCommitments()
+		if err != nil {
+			return nil, err
+		}
+		var atts []*eth.AttestationElectra
+		if b.Body().Attestations() != nil {
+			atts = make([]*eth.AttestationElectra, len(b.Body().Attestations()))
+			for i, att := range b.Body().Attestations() {
+				a, ok := att.(*eth.AttestationElectra)
+				if !ok {
+					return nil, fmt.Errorf("attestation has wrong type (expected %T, got %T)", &eth.Attestation{}, att)
+				}
+				atts[i] = a
+			}
+		}
+		var attSlashings []*eth.AttesterSlashingElectra
+		if b.Body().AttesterSlashings() != nil {
+			attSlashings = make([]*eth.AttesterSlashingElectra, len(b.Body().AttesterSlashings()))
+			for i, slashing := range b.Body().AttesterSlashings() {
+				s, ok := slashing.(*eth.AttesterSlashingElectra)
+				if !ok {
+					return nil, fmt.Errorf("attester slashing has wrong type (expected %T, got %T)", &eth.AttesterSlashing{}, slashing)
+				}
+				attSlashings[i] = s
+			}
+		}
+
+		er, err := b.Body().ExecutionRequests()
+		if err != nil {
+			return nil, err
+		}
+
+		fullBlock = &eth.SignedBeaconBlockEip7805{
 			Block: &eth.BeaconBlockElectra{
 				Slot:          b.Slot(),
 				ProposerIndex: b.ProposerIndex(),

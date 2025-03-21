@@ -311,6 +311,18 @@ func (s *Server) produceBlockV3(ctx context.Context, w http.ResponseWriter, r *h
 		handleProduceFuluV3(w, isSSZ, fuluBlockContents, v1alpha1resp.PayloadValue, consensusBlockValue)
 		return
 	}
+	blindedEip7805BlockContents, ok := v1alpha1resp.Block.(*eth.GenericBeaconBlock_BlindedEip7805)
+	if ok {
+		w.Header().Set(api.VersionHeader, version.String(version.Eip7805))
+		handleProduceBlindedEip7805V3(w, isSSZ, blindedEip7805BlockContents, v1alpha1resp.PayloadValue, consensusBlockValue)
+		return
+	}
+	eip7805BlockContents, ok := v1alpha1resp.Block.(*eth.GenericBeaconBlock_Eip7805)
+	if ok {
+		w.Header().Set(api.VersionHeader, version.String(version.Eip7805))
+		handleProduceEip7805V3(w, isSSZ, eip7805BlockContents, v1alpha1resp.PayloadValue, consensusBlockValue)
+		return
+	}
 }
 
 func getConsensusBlockValue(ctx context.Context, blockRewardsFetcher rewards.BlockRewardsFetcher, i interface{} /* block as argument */) (string, *httputil.DefaultJsonError) {
@@ -747,6 +759,77 @@ func handleProduceFuluV3(
 	}
 	httputil.WriteJson(w, &structs.ProduceBlockV3Response{
 		Version:                 version.String(version.Fulu),
+		ExecutionPayloadBlinded: false,
+		ExecutionPayloadValue:   executionPayloadValue, // mev not available at this point
+		ConsensusBlockValue:     consensusBlockValue,
+		Data:                    jsonBytes,
+	})
+}
+
+func handleProduceBlindedEip7805V3(
+	w http.ResponseWriter,
+	isSSZ bool,
+	blk *eth.GenericBeaconBlock_BlindedEip7805,
+	executionPayloadValue string,
+	consensusPayloadValue string,
+) {
+	if isSSZ {
+		sszResp, err := blk.BlindedEip7805.MarshalSSZ()
+		if err != nil {
+			httputil.HandleError(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		httputil.WriteSsz(w, sszResp, "blindedEip7805BlockContents.ssz")
+		return
+	}
+	blindedBlock, err := structs.BlindedBeaconBlockEip7805FromConsensus(blk.BlindedEip7805)
+	if err != nil {
+		httputil.HandleError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	jsonBytes, err := json.Marshal(blindedBlock)
+	if err != nil {
+		httputil.HandleError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	httputil.WriteJson(w, &structs.ProduceBlockV3Response{
+		Version:                 version.String(version.Eip7805),
+		ExecutionPayloadBlinded: true,
+		ExecutionPayloadValue:   executionPayloadValue,
+		ConsensusBlockValue:     consensusPayloadValue,
+		Data:                    jsonBytes,
+	})
+}
+
+func handleProduceEip7805V3(
+	w http.ResponseWriter,
+	isSSZ bool,
+	blk *eth.GenericBeaconBlock_Eip7805,
+	executionPayloadValue string,
+	consensusBlockValue string,
+) {
+	if isSSZ {
+		sszResp, err := blk.Eip7805.MarshalSSZ()
+		if err != nil {
+			httputil.HandleError(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		httputil.WriteSsz(w, sszResp, "eip7805BlockContents.ssz")
+		return
+	}
+
+	blockContents, err := structs.BeaconBlockContentsEip7805FromConsensus(blk.Eip7805)
+	if err != nil {
+		httputil.HandleError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	jsonBytes, err := json.Marshal(blockContents)
+	if err != nil {
+		httputil.HandleError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	httputil.WriteJson(w, &structs.ProduceBlockV3Response{
+		Version:                 version.String(version.Eip7805),
 		ExecutionPayloadBlinded: false,
 		ExecutionPayloadValue:   executionPayloadValue, // mev not available at this point
 		ConsensusBlockValue:     consensusBlockValue,

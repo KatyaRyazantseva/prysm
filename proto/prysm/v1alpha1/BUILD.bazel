@@ -26,7 +26,7 @@ proto_library(
         "powchain.proto",
         "slasher.proto",
         "validator.proto",
-        "focil.proto",
+        "eip7805.proto",
         ":ssz_proto_files",
     ],
     visibility = ["//visibility:public"],
@@ -187,6 +187,14 @@ ssz_fulu_objs = [
     "SignedBeaconBlockContentsFulu",
     "SignedBeaconBlockFulu",
     "SignedBlindedBeaconBlockFulu",
+]
+
+ssz_eip7805_objs = [
+    "BeaconBlockContentsEip7805",
+    "BlindedBeaconBlockEip7805",
+    "SignedBeaconBlockContentsEip7805",
+    "SignedBeaconBlockEip7805",
+    "SignedBlindedBeaconBlockEip7805",
     "InclusionList",
     "SignedInclusionList",
 ]
@@ -282,6 +290,19 @@ ssz_gen_marshal(
 )
 
 ssz_gen_marshal(
+    name = "ssz_generated_eip7805",
+    out = "eip7805.ssz.go",
+    exclude_objs = ssz_phase0_objs + ssz_altair_objs + ssz_bellatrix_objs + ssz_capella_objs + ssz_deneb_objs + ssz_electra_objs,
+    go_proto = ":go_proto",
+    includes = [
+        "//consensus-types/primitives:go_default_library",
+        "//math:go_default_library",
+        "//proto/engine/v1:go_default_library",
+    ],
+    objs = ssz_eip7805_objs,
+)
+
+ssz_gen_marshal(
     name = "ssz_generated_non_core",
     out = "non-core.ssz.go",
     go_proto = ":go_proto",
@@ -346,6 +367,7 @@ go_library(
         ":ssz_generated_deneb",  # keep
         ":ssz_generated_electra",  # keep
         ":ssz_generated_fulu",  # keep
+        ":ssz_generated_eip7805",  # keep
         ":ssz_generated_non_core",  # keep
         ":ssz_generated_phase0",  # keep
     ],

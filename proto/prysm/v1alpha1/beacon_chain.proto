@@ -473,6 +473,12 @@ message BeaconBlockContainer {
 
     // Representing a blinded Fulu block.
     SignedBlindedBeaconBlockFulu blinded_fulu_block = 14;
+
+    // Representing a Eip7805 block.
+    SignedBeaconBlockEip7805 eip7805_block = 15;
+
+    // Representing a blinded Eip7805 block.
+    SignedBlindedBeaconBlockEip7805 blinded_eip7805_block = 16;
   }
 }
 

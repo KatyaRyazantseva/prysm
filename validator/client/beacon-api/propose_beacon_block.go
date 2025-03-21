@@ -179,6 +179,35 @@ func (c *beaconApiValidatorClient) proposeBeaconBlock(ctx context.Context, in *e
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to marshal blinded fulu beacon block contents")
 		}
+	case *ethpb.GenericSignedBeaconBlock_Eip7805:
+		consensusVersion = "eip7805"
+		beaconBlockRoot, err = blockType.Eip7805.Block.HashTreeRoot()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to compute block root for eip7805 beacon block")
+		}
+		signedBlock, err := structs.SignedBeaconBlockContentsEip7805FromConsensus(blockType.Eip7805)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert eip7805 beacon block contents")
+		}
+		marshalledSignedBeaconBlockJson, err = json.Marshal(signedBlock)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to marshal eip7805 beacon block contents")
+		}
+	case *ethpb.GenericSignedBeaconBlock_BlindedEip7805:
+		blinded = true
+		consensusVersion = "eip7805"
+		beaconBlockRoot, err = blockType.BlindedEip7805.HashTreeRoot()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to compute block root for blinded eip7805 beacon block")
+		}
+		signedBlock, err := structs.SignedBlindedBeaconBlockEip7805FromConsensus(blockType.BlindedEip7805)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert blinded eip7805 beacon block contents")
+		}
+		marshalledSignedBeaconBlockJson, err = json.Marshal(signedBlock)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to marshal blinded eip7805 beacon block contents")
+		}
 	default:
 		return nil, errors.Errorf("unsupported block type %T", in.Block)
 	}

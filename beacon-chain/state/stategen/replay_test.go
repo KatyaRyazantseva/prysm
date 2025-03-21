@@ -160,6 +160,8 @@ func TestReplayBlocks_ThroughFutureForkBoundaries(t *testing.T) {
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.ElectraForkVersion)] = 5
 	bCfg.FuluForkEpoch = 6
 	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.FuluForkVersion)] = 6
+	bCfg.Eip7805ForkEpoch = 7
+	bCfg.ForkVersionSchedule[bytesutil.ToBytes4(bCfg.Eip7805ForkVersion)] = 7
 	params.OverrideBeaconConfig(bCfg)
 
 	beaconState, _ := util.DeterministicGenesisState(t, 32)

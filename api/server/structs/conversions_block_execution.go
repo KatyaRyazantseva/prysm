@@ -971,3 +971,13 @@ var (
 	ExecutionPayloadHeaderFuluFromConsensus = ExecutionPayloadHeaderDenebFromConsensus
 	BeaconBlockFuluFromConsensus            = BeaconBlockElectraFromConsensus
 )
+
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+var (
+	ExecutionPayloadEip7805FromConsensus       = ExecutionPayloadDenebFromConsensus
+	ExecutionPayloadHeaderEip7805FromConsensus = ExecutionPayloadHeaderDenebFromConsensus
+	BeaconBlockEip7805FromConsensus            = BeaconBlockElectraFromConsensus
+)

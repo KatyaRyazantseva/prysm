@@ -689,3 +689,43 @@ func (sigBlock *SignedBeaconBlockFulu) Copy() *SignedBeaconBlockFulu {
 		Signature: bytesutil.SafeCopyBytes(sigBlock.Signature),
 	}
 }
+
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+// Copy --
+func (sigBlock *SignedBlindedBeaconBlockEip7805) Copy() *SignedBlindedBeaconBlockEip7805 {
+	if sigBlock == nil {
+		return nil
+	}
+	return &SignedBlindedBeaconBlockEip7805{
+		Message:   sigBlock.Message.Copy(),
+		Signature: bytesutil.SafeCopyBytes(sigBlock.Signature),
+	}
+}
+
+// Copy --
+func (block *BlindedBeaconBlockEip7805) Copy() *BlindedBeaconBlockEip7805 {
+	if block == nil {
+		return nil
+	}
+	return &BlindedBeaconBlockEip7805{
+		Slot:          block.Slot,
+		ProposerIndex: block.ProposerIndex,
+		ParentRoot:    bytesutil.SafeCopyBytes(block.ParentRoot),
+		StateRoot:     bytesutil.SafeCopyBytes(block.StateRoot),
+		Body:          block.Body.Copy(),
+	}
+}
+
+// Copy --
+func (sigBlock *SignedBeaconBlockEip7805) Copy() *SignedBeaconBlockEip7805 {
+	if sigBlock == nil {
+		return nil
+	}
+	return &SignedBeaconBlockEip7805{
+		Block:     sigBlock.Block.Copy(),
+		Signature: bytesutil.SafeCopyBytes(sigBlock.Signature),
+	}
+}

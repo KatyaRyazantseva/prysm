@@ -81,6 +81,8 @@ func TestGetSpec(t *testing.T) {
 	config.ElectraForkEpoch = 107
 	config.FuluForkVersion = []byte("FuluForkVersion")
 	config.FuluForkEpoch = 109
+	config.Eip7805ForkVersion = []byte("Eip7805ForkVersion")
+	config.Eip7805ForkEpoch = 18446744073709551615
 	config.BLSWithdrawalPrefixByte = byte('b')
 	config.ETH1AddressWithdrawalPrefixByte = byte('c')
 	config.GenesisDelay = 24
@@ -562,7 +564,7 @@ func TestGetSpec(t *testing.T) {
 			case "DOMAIN_INCLUSION_LIST_COMMITTEE":
 				assert.Equal(t, "0x00000000", v)
 			case "EIP7805_FORK_VERSION":
-				assert.Equal(t, "0x07000000", v)
+				assert.Equal(t, "0x"+hex.EncodeToString([]byte("Eip7805ForkVersion")), v)
 			case "EIP7805_FORK_EPOCH":
 				assert.Equal(t, "18446744073709551615", v)
 			default:

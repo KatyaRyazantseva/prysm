@@ -79,7 +79,9 @@ func versionHeaderFromRequest(body []byte) (string, error) {
 		return "", errors.Wrap(err, "unable to peek slot from block")
 	}
 	ce := slots.ToEpoch(sp.Block.Slot)
-	if ce >= params.BeaconConfig().FuluForkEpoch {
+	if ce >= params.BeaconConfig().Eip7805ForkEpoch {
+		return version.String(version.Eip7805), nil
+	} else if ce >= params.BeaconConfig().FuluForkEpoch {
 		return version.String(version.Fulu), nil
 	} else if ce >= params.BeaconConfig().ElectraForkEpoch {
 		return version.String(version.Electra), nil
@@ -477,6 +479,7 @@ func decodeBlindedBlockSSZ(versionHeader string, body []byte) (*eth.GenericSigne
 }
 
 var blindedSSZDecoders = map[string]blockDecoder{
+	version.String(version.Eip7805):   decodeBlindedEip7805SSZ,
 	version.String(version.Fulu):      decodeBlindedFuluSSZ,
 	version.String(version.Electra):   decodeBlindedElectraSSZ,
 	version.String(version.Deneb):     decodeBlindedDenebSSZ,
@@ -484,6 +487,18 @@ var blindedSSZDecoders = map[string]blockDecoder{
 	version.String(version.Bellatrix): decodeBlindedBellatrixSSZ,
 	version.String(version.Altair):    decodeAltairSSZ,
 	version.String(version.Phase0):    decodePhase0SSZ,
+}
+
+func decodeBlindedEip7805SSZ(body []byte) (*eth.GenericSignedBeaconBlock, error) {
+	eip7805Block := &eth.SignedBlindedBeaconBlockEip7805{}
+	if err := eip7805Block.UnmarshalSSZ(body); err != nil {
+		return nil, decodingError(version.String(version.Eip7805), err)
+	}
+	return &eth.GenericSignedBeaconBlock{
+		Block: &eth.GenericSignedBeaconBlock_BlindedEip7805{
+			BlindedEip7805: eip7805Block,
+		},
+	}, nil
 }
 
 func decodeBlindedFuluSSZ(body []byte) (*eth.GenericSignedBeaconBlock, error) {
@@ -582,6 +597,7 @@ func decodeBlindedBlockJSON(versionHeader string, body []byte) (*eth.GenericSign
 }
 
 var blindedJSONDecoders = map[string]blockDecoder{
+	version.String(version.Eip7805):   decodeBlindedEip7805JSON,
 	version.String(version.Fulu):      decodeBlindedFuluJSON,
 	version.String(version.Electra):   decodeBlindedElectraJSON,
 	version.String(version.Deneb):     decodeBlindedDenebJSON,
@@ -589,6 +605,13 @@ var blindedJSONDecoders = map[string]blockDecoder{
 	version.String(version.Bellatrix): decodeBlindedBellatrixJSON,
 	version.String(version.Altair):    decodeAltairJSON,
 	version.String(version.Phase0):    decodePhase0JSON,
+}
+
+func decodeBlindedEip7805JSON(body []byte) (*eth.GenericSignedBeaconBlock, error) {
+	return decodeGenericJSON[*structs.SignedBlindedBeaconBlockEip7805](
+		body,
+		version.String(version.Eip7805),
+	)
 }
 
 func decodeBlindedFuluJSON(body []byte) (*eth.GenericSignedBeaconBlock, error) {
@@ -711,6 +734,7 @@ func (s *Server) publishBlockSSZ(ctx context.Context, w http.ResponseWriter, r *
 }
 
 var sszDecoders = map[string]blockDecoder{
+	version.String(version.Eip7805):   decodeEip7805SSZ,
 	version.String(version.Fulu):      decodeFuluSSZ,
 	version.String(version.Electra):   decodeElectraSSZ,
 	version.String(version.Deneb):     decodeDenebSSZ,
@@ -726,6 +750,18 @@ func decodeSSZToGenericBlock(versionHeader string, body []byte) (*eth.GenericSig
 		return decoder(body)
 	}
 	return nil, errors.New("body does not represent a valid block type")
+}
+
+func decodeEip7805SSZ(body []byte) (*eth.GenericSignedBeaconBlock, error) {
+	eip7805Block := &eth.SignedBeaconBlockContentsEip7805{}
+	if err := eip7805Block.UnmarshalSSZ(body); err != nil {
+		return nil, decodingError(
+			version.String(version.Eip7805), err,
+		)
+	}
+	return &eth.GenericSignedBeaconBlock{
+		Block: &eth.GenericSignedBeaconBlock_Eip7805{Eip7805: eip7805Block},
+	}, nil
 }
 
 func decodeFuluSSZ(body []byte) (*eth.GenericSignedBeaconBlock, error) {
@@ -866,6 +902,7 @@ func (s *Server) publishBlock(ctx context.Context, w http.ResponseWriter, r *htt
 }
 
 var jsonDecoders = map[string]blockDecoder{
+	version.String(version.Eip7805):   decodeEip7805JSON,
 	version.String(version.Fulu):      decodeFuluJSON,
 	version.String(version.Electra):   decodeElectraJSON,
 	version.String(version.Deneb):     decodeDenebJSON,
@@ -881,6 +918,13 @@ func decodeJSONToGenericBlock(versionHeader string, body []byte) (*eth.GenericSi
 		return decoder(body)
 	}
 	return nil, fmt.Errorf("body does not represent a valid block type")
+}
+
+func decodeEip7805JSON(body []byte) (*eth.GenericSignedBeaconBlock, error) {
+	return decodeGenericJSON[*structs.SignedBeaconBlockContentsEip7805](
+		body,
+		version.String(version.Eip7805),
+	)
 }
 
 func decodeFuluJSON(body []byte) (*eth.GenericSignedBeaconBlock, error) {
@@ -935,6 +979,8 @@ func decodePhase0JSON(body []byte) (*eth.GenericSignedBeaconBlock, error) {
 // broadcastSidecarsIfSupported broadcasts blob sidecars when an equivocated block occurs.
 func broadcastSidecarsIfSupported(ctx context.Context, s *Server, b interfaces.SignedBeaconBlock, gb *eth.GenericSignedBeaconBlock, versionHeader string) error {
 	switch versionHeader {
+	case version.String(version.Eip7805):
+		return s.broadcastSeenBlockSidecars(ctx, b, gb.GetEip7805().Blobs, gb.GetEip7805().KzgProofs)
 	case version.String(version.Fulu):
 		return s.broadcastSeenBlockSidecars(ctx, b, gb.GetFulu().Blobs, gb.GetFulu().KzgProofs)
 	case version.String(version.Electra):
@@ -1022,6 +1068,9 @@ func (s *Server) validateConsensus(ctx context.Context, b *eth.GenericSignedBeac
 	case version.Fulu:
 		blobs = b.GetFulu().Blobs
 		proofs = b.GetFulu().KzgProofs
+	case version.Eip7805:
+		blobs = b.GetEip7805().Blobs
+		proofs = b.GetEip7805().KzgProofs
 	default:
 		return nil
 	}

@@ -46,7 +46,7 @@ func TestSlotFromBlock(t *testing.T) {
 }
 
 func TestByState(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 
 	bc := params.BeaconConfig()
 	altairSlot, err := slots.EpochStart(bc.AltairForkEpoch)
@@ -60,6 +60,8 @@ func TestByState(t *testing.T) {
 	electraSlot, err := slots.EpochStart(bc.ElectraForkEpoch)
 	require.NoError(t, err)
 	fuluSlot, err := slots.EpochStart(bc.FuluForkEpoch)
+	require.NoError(t, err)
+	eip7805Slot, err := slots.EpochStart(bc.Eip7805ForkEpoch)
 	require.NoError(t, err)
 	cases := []struct {
 		name        string
@@ -108,6 +110,12 @@ func TestByState(t *testing.T) {
 			version:     version.Fulu,
 			slot:        fuluSlot,
 			forkversion: bytesutil.ToBytes4(bc.FuluForkVersion),
+		},
+		{
+			name:        "eip7805",
+			version:     version.Eip7805,
+			slot:        eip7805Slot,
+			forkversion: bytesutil.ToBytes4(bc.Eip7805ForkVersion),
 		},
 	}
 	for _, c := range cases {
@@ -145,6 +153,8 @@ func stateForVersion(v int) (state.BeaconState, error) {
 		return util.NewBeaconStateElectra()
 	case version.Fulu:
 		return util.NewBeaconStateFulu()
+	case version.Eip7805:
+		return util.NewBeaconStateEip7805()
 	default:
 		return nil, fmt.Errorf("unrecognized version %d", v)
 	}
@@ -152,7 +162,7 @@ func stateForVersion(v int) (state.BeaconState, error) {
 
 func TestUnmarshalState(t *testing.T) {
 	ctx := context.Background()
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 
 	bc := params.BeaconConfig()
 	altairSlot, err := slots.EpochStart(bc.AltairForkEpoch)
@@ -166,6 +176,8 @@ func TestUnmarshalState(t *testing.T) {
 	electraSlot, err := slots.EpochStart(bc.ElectraForkEpoch)
 	require.NoError(t, err)
 	fuluSlot, err := slots.EpochStart(bc.FuluForkEpoch)
+	require.NoError(t, err)
+	eip7805Slot, err := slots.EpochStart(bc.Eip7805ForkEpoch)
 	require.NoError(t, err)
 	cases := []struct {
 		name        string
@@ -215,6 +227,12 @@ func TestUnmarshalState(t *testing.T) {
 			slot:        fuluSlot,
 			forkversion: bytesutil.ToBytes4(bc.FuluForkVersion),
 		},
+		{
+			name:        "eip7805",
+			version:     version.Eip7805,
+			slot:        eip7805Slot,
+			forkversion: bytesutil.ToBytes4(bc.Eip7805ForkVersion),
+		},
 	}
 	for _, c := range cases {
 		st, err := stateForVersion(c.version)
@@ -240,7 +258,7 @@ func TestUnmarshalState(t *testing.T) {
 }
 
 func TestDetectAndUnmarshalBlock(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 
 	altairS, err := slots.EpochStart(params.BeaconConfig().AltairForkEpoch)
 	require.NoError(t, err)
@@ -253,6 +271,8 @@ func TestDetectAndUnmarshalBlock(t *testing.T) {
 	electraS, err := slots.EpochStart(params.BeaconConfig().ElectraForkEpoch)
 	require.NoError(t, err)
 	fuluS, err := slots.EpochStart(params.BeaconConfig().FuluForkEpoch)
+	require.NoError(t, err)
+	eip7805S, err := slots.EpochStart(params.BeaconConfig().Eip7805ForkEpoch)
 	require.NoError(t, err)
 	cases := []struct {
 		b         func(*testing.T, primitives.Slot) interfaces.ReadOnlySignedBeaconBlock
@@ -310,6 +330,11 @@ func TestDetectAndUnmarshalBlock(t *testing.T) {
 			slot: fuluS,
 		},
 		{
+			name: "first slot of eip7805",
+			b:    signedTestBlockEip7805,
+			slot: eip7805S,
+		},
+		{
 			name:      "bellatrix block in altair slot",
 			b:         signedTestBlockBellatrix,
 			slot:      bellaS - 1,
@@ -345,7 +370,7 @@ func TestDetectAndUnmarshalBlock(t *testing.T) {
 }
 
 func TestUnmarshalBlock(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 
 	genv := bytesutil.ToBytes4(params.BeaconConfig().GenesisForkVersion)
 	altairv := bytesutil.ToBytes4(params.BeaconConfig().AltairForkVersion)
@@ -354,6 +379,7 @@ func TestUnmarshalBlock(t *testing.T) {
 	denebV := bytesutil.ToBytes4(params.BeaconConfig().DenebForkVersion)
 	electraV := bytesutil.ToBytes4(params.BeaconConfig().ElectraForkVersion)
 	fuluV := bytesutil.ToBytes4(params.BeaconConfig().FuluForkVersion)
+	eip7805V := bytesutil.ToBytes4(params.BeaconConfig().Eip7805ForkVersion)
 	altairS, err := slots.EpochStart(params.BeaconConfig().AltairForkEpoch)
 	require.NoError(t, err)
 	bellaS, err := slots.EpochStart(params.BeaconConfig().BellatrixForkEpoch)
@@ -365,6 +391,8 @@ func TestUnmarshalBlock(t *testing.T) {
 	electraS, err := slots.EpochStart(params.BeaconConfig().ElectraForkEpoch)
 	require.NoError(t, err)
 	fuluS, err := slots.EpochStart(params.BeaconConfig().FuluForkEpoch)
+	require.NoError(t, err)
+	eip7805S, err := slots.EpochStart(params.BeaconConfig().Eip7805ForkEpoch)
 	require.NoError(t, err)
 	cases := []struct {
 		b       func(*testing.T, primitives.Slot) interfaces.ReadOnlySignedBeaconBlock
@@ -433,6 +461,12 @@ func TestUnmarshalBlock(t *testing.T) {
 			slot:    fuluS,
 		},
 		{
+			name:    "first slot of eip7805",
+			b:       signedTestBlockEip7805,
+			version: eip7805V,
+			slot:    eip7805S,
+		},
+		{
 			name:    "bellatrix block in altair slot",
 			b:       signedTestBlockBellatrix,
 			version: bellav,
@@ -476,7 +510,7 @@ func TestUnmarshalBlock(t *testing.T) {
 }
 
 func TestUnmarshalBlindedBlock(t *testing.T) {
-	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu})()
+	defer util.HackForksMaxuint(t, []int{version.Electra, version.Fulu, version.Eip7805})()
 
 	genv := bytesutil.ToBytes4(params.BeaconConfig().GenesisForkVersion)
 	altairv := bytesutil.ToBytes4(params.BeaconConfig().AltairForkVersion)
@@ -485,6 +519,7 @@ func TestUnmarshalBlindedBlock(t *testing.T) {
 	denebV := bytesutil.ToBytes4(params.BeaconConfig().DenebForkVersion)
 	electraV := bytesutil.ToBytes4(params.BeaconConfig().ElectraForkVersion)
 	fuluV := bytesutil.ToBytes4(params.BeaconConfig().FuluForkVersion)
+	eip7805V := bytesutil.ToBytes4(params.BeaconConfig().Eip7805ForkVersion)
 	altairS, err := slots.EpochStart(params.BeaconConfig().AltairForkEpoch)
 	require.NoError(t, err)
 	bellaS, err := slots.EpochStart(params.BeaconConfig().BellatrixForkEpoch)
@@ -496,6 +531,8 @@ func TestUnmarshalBlindedBlock(t *testing.T) {
 	electraS, err := slots.EpochStart(params.BeaconConfig().ElectraForkEpoch)
 	require.NoError(t, err)
 	fuluS, err := slots.EpochStart(params.BeaconConfig().FuluForkEpoch)
+	require.NoError(t, err)
+	eip7805S, err := slots.EpochStart(params.BeaconConfig().Eip7805ForkEpoch)
 	require.NoError(t, err)
 	cases := []struct {
 		b       func(*testing.T, primitives.Slot) interfaces.ReadOnlySignedBeaconBlock
@@ -569,6 +606,12 @@ func TestUnmarshalBlindedBlock(t *testing.T) {
 			b:       signedTestBlindedBlockFulu,
 			version: fuluV,
 			slot:    fuluS,
+		},
+		{
+			name:    "first slot of eip7805",
+			b:       signedTestBlindedBlockEip7805,
+			version: eip7805V,
+			slot:    eip7805S,
 		},
 		{
 			name:    "genesis block in altair slot",
@@ -724,6 +767,26 @@ func signedTestBlockFulu(t *testing.T, slot primitives.Slot) interfaces.ReadOnly
 
 func signedTestBlindedBlockFulu(t *testing.T, slot primitives.Slot) interfaces.ReadOnlySignedBeaconBlock {
 	b := util.NewBlindedBeaconBlockFulu()
+	b.Message.Slot = slot
+	s, err := blocks.NewSignedBeaconBlock(b)
+	require.NoError(t, err)
+	return s
+}
+
+// ----------------------------------------------------------------------------
+// Eip7805
+// ----------------------------------------------------------------------------
+
+func signedTestBlockEip7805(t *testing.T, slot primitives.Slot) interfaces.ReadOnlySignedBeaconBlock {
+	b := util.NewBeaconBlockEip7805()
+	b.Block.Slot = slot
+	s, err := blocks.NewSignedBeaconBlock(b)
+	require.NoError(t, err)
+	return s
+}
+
+func signedTestBlindedBlockEip7805(t *testing.T, slot primitives.Slot) interfaces.ReadOnlySignedBeaconBlock {
+	b := util.NewBlindedBeaconBlockEip7805()
 	b.Message.Slot = slot
 	s, err := blocks.NewSignedBeaconBlock(b)
 	require.NoError(t, err)
