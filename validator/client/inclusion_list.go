@@ -112,8 +112,7 @@ func (v *validator) waitForInclusionList(ctx context.Context, slot primitives.Sl
 	defer span.End()
 
 	startTime := slots.StartTime(v.genesisTime, slot)
-	s := params.BeaconConfig().SecondsPerSlot / params.BeaconConfig().IntervalsPerSlot
-	dutyTime := startTime.Add(time.Duration(params.BeaconConfig().SecondsPerSlot-s) * time.Second)
+	dutyTime := startTime.Add(time.Duration(params.BeaconConfig().SecondsPerSlot-params.BeaconConfig().InclusionListSubmissionDeadLine-1) * time.Second)
 
 	wait := prysmTime.Until(dutyTime)
 	if wait <= 0 {
