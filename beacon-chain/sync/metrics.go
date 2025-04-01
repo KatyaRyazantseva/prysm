@@ -188,7 +188,7 @@ var (
 	// Inclusion lists performance
 	validatedInclusionListCounter = promauto.NewCounter(
 		prometheus.CounterOpts{
-			Name: "beacon_validated_inclusion_list_total",
+			Name: "beacon_inclusion_list_validated_total",
 			Help: "Count the number of validated inclusion lists.",
 		},
 	)
