@@ -121,6 +121,5 @@ func init() {
 	GossipTypeMapping[reflect.TypeOf(&ethpb.SignedBeaconBlockFulu{})] = BlockSubnetTopicFormat
 
 	// Specially handle Eip7805 objects.
-	GossipTypeMapping[reflect.TypeOf(&ethpb.SignedBeaconBlockEip7805{})] = BlockSubnetTopicFormat
 	GossipTypeMapping[reflect.TypeOf(&ethpb.SignedInclusionList{})] = InclusionListTopicFormat
 }
