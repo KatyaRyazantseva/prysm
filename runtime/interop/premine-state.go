@@ -154,7 +154,7 @@ func (s *PremineGenesisConfig) empty() (state.BeaconState, error) {
 		if err != nil {
 			return nil, err
 		}
-	case version.Electra:
+	case version.Electra, version.Eip7805:
 		e, err = state_native.InitializeFromProtoElectra(&ethpb.BeaconStateElectra{})
 		if err != nil {
 			return nil, err
@@ -544,7 +544,7 @@ func (s *PremineGenesisConfig) setLatestBlockHeader(g state.BeaconState) error {
 			BlsToExecutionChanges: make([]*ethpb.SignedBLSToExecutionChange, 0),
 			BlobKzgCommitments:    make([][]byte, 0),
 		}
-	case version.Electra:
+	case version.Electra, version.Eip7805:
 		body = &ethpb.BeaconBlockBodyElectra{
 			RandaoReveal: make([]byte, 96),
 			Eth1Data: &ethpb.Eth1Data{

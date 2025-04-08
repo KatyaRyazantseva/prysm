@@ -157,7 +157,7 @@ func (cf *VersionedUnmarshaler) UnmarshalBeaconState(marshaled []byte) (s state.
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to init state trie from state, detected fork=%s", forkName)
 		}
-	case version.Electra:
+	case version.Electra, version.Eip7805:
 		st := &ethpb.BeaconStateElectra{}
 		err = st.UnmarshalSSZ(marshaled)
 		if err != nil {
@@ -235,7 +235,7 @@ func (cf *VersionedUnmarshaler) UnmarshalBeaconBlock(marshaled []byte) (interfac
 		blk = &ethpb.SignedBeaconBlockCapella{}
 	case version.Deneb:
 		blk = &ethpb.SignedBeaconBlockDeneb{}
-	case version.Electra:
+	case version.Electra, version.Eip7805:
 		blk = &ethpb.SignedBeaconBlockElectra{}
 	case version.Fulu:
 		blk = &ethpb.SignedBeaconBlockFulu{}
@@ -276,7 +276,7 @@ func (cf *VersionedUnmarshaler) UnmarshalBlindedBeaconBlock(marshaled []byte) (i
 		blk = &ethpb.SignedBlindedBeaconBlockCapella{}
 	case version.Deneb:
 		blk = &ethpb.SignedBlindedBeaconBlockDeneb{}
-	case version.Electra:
+	case version.Electra, version.Eip7805:
 		blk = &ethpb.SignedBlindedBeaconBlockElectra{}
 	case version.Fulu:
 		blk = &ethpb.SignedBlindedBeaconBlockFulu{}

@@ -170,7 +170,7 @@ func UpgradeToEip7805(beaconState state.BeaconState) (state.BeaconState, error) 
 	}
 
 	// Need to cast the beaconState to use in helper functions
-	post, err := state_native.InitializeFromProtoUnsafeEip7805(s)
+	post, err := state_native.InitializeFromProtoUnsafeElectra(s)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to initialize post eip7805 beaconState")
 	}
