@@ -4,8 +4,8 @@ import (
 	"math"
 	"time"
 
-	fieldparams "github.com/prysmaticlabs/prysm/v5/config/fieldparams"
-	"github.com/prysmaticlabs/prysm/v5/encoding/bytesutil"
+	fieldparams "github.com/OffchainLabs/prysm/v6/config/fieldparams"
+	"github.com/OffchainLabs/prysm/v6/encoding/bytesutil"
 )
 
 // MainnetConfig returns the configuration to be used in the main network.
@@ -13,7 +13,7 @@ func MainnetConfig() *BeaconChainConfig {
 	if mainnetBeaconConfig.ForkVersionSchedule == nil {
 		mainnetBeaconConfig.InitializeForkSchedule()
 	}
-	return mainnetBeaconConfig
+	return mainnetBeaconConfig.Copy()
 }
 
 const (
@@ -28,7 +28,7 @@ const (
 	// Deneb Fork Epoch for mainnet config.
 	mainnetDenebForkEpoch = 269568 // March 13, 2024, 13:55:35 UTC
 	// Electra Fork Epoch for mainnet config
-	mainnetElectraForkEpoch = math.MaxUint64 // Far future / to be defined
+	mainnetElectraForkEpoch = 364032 // May 7, 2025, 10:05:11 UTC
 	// Fulu Fork Epoch for mainnet config
 	mainnetFuluForkEpoch = math.MaxUint64 // Far future / to be defined
 	// Eip7805 Fork Epoch for mainnet config
@@ -224,8 +224,8 @@ var mainnetBeaconConfig = &BeaconChainConfig{
 	ElectraForkEpoch:     mainnetElectraForkEpoch,
 	FuluForkVersion:      []byte{6, 0, 0, 0},
 	FuluForkEpoch:        mainnetFuluForkEpoch,
-	Eip7805ForkVersion:   []byte{7, 0, 0, 0},
-	Eip7805ForkEpoch:     mainnetEip7805ForkEpoch,
+	Eip7805ForkEpoch:     math.MaxUint64,
+	Eip7805ForkVersion:   []byte{10, 0, 0, 0},
 
 	// New values introduced in Altair hard fork 1.
 	// Participation flag indices.
@@ -272,7 +272,7 @@ var mainnetBeaconConfig = &BeaconChainConfig{
 	BytesPerLogsBloom:                256,
 	MaxExtraDataBytes:                32,
 	EthBurnAddressHex:                "0x0000000000000000000000000000000000000000",
-	DefaultBuilderGasLimit:           uint64(30000000),
+	DefaultBuilderGasLimit:           uint64(36000000),
 
 	// Mevboost circuit breaker
 	MaxBuilderConsecutiveMissedSlots: 3,
@@ -320,8 +320,7 @@ var mainnetBeaconConfig = &BeaconChainConfig{
 	MinEpochsForDataColumnSidecarsRequest: 4096,
 
 	// Values related to networking parameters.
-	GossipMaxSize:                   10 * 1 << 20, // 10 MiB
-	MaxChunkSize:                    10 * 1 << 20, // 10 MiB
+	MaxPayloadSize:                  10 * 1 << 20, // 10 MiB
 	AttestationSubnetCount:          64,
 	AttestationPropagationSlotRange: 32,
 	MaxRequestBlocks:                1 << 10, // 1024
@@ -342,14 +341,15 @@ var mainnetBeaconConfig = &BeaconChainConfig{
 	DeprecatedTargetBlobsPerBlockElectra: 6,
 	MaxRequestBlobSidecarsElectra:        1152,
 
-	InclusionListCommitteeSize: 16,
+	InclusionListCommitteeSize:  16,
+	InclusionListFreezeDeadLine: 8,
 }
 
 // MainnetTestConfig provides a version of the mainnet config that has a different name
 // and a different fork choice schedule. This can be used in cases where we want to use config values
 // that are consistent with mainnet, but won't conflict or cause the hard-coded genesis to be loaded.
 func MainnetTestConfig() *BeaconChainConfig {
-	mn := MainnetConfig().Copy()
+	mn := MainnetConfig()
 	mn.ConfigName = MainnetTestName
 	FillTestVersions(mn, 128)
 	return mn

@@ -5,12 +5,12 @@ import (
 	"math"
 	"time"
 
+	"github.com/OffchainLabs/prysm/v6/config/params"
+	"github.com/OffchainLabs/prysm/v6/consensus-types/primitives"
+	mathutil "github.com/OffchainLabs/prysm/v6/math"
+	"github.com/OffchainLabs/prysm/v6/runtime/version"
+	prysmTime "github.com/OffchainLabs/prysm/v6/time"
 	"github.com/pkg/errors"
-	"github.com/prysmaticlabs/prysm/v5/config/params"
-	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
-	mathutil "github.com/prysmaticlabs/prysm/v5/math"
-	"github.com/prysmaticlabs/prysm/v5/runtime/version"
-	prysmTime "github.com/prysmaticlabs/prysm/v5/time"
 	"github.com/sirupsen/logrus"
 )
 
@@ -87,7 +87,7 @@ func ToForkVersion(slot primitives.Slot) int {
 	epoch := ToEpoch(slot)
 	switch {
 	case epoch >= params.BeaconConfig().Eip7805ForkEpoch:
-		return version.Eip7805
+		return version.Focil
 	case epoch >= params.BeaconConfig().FuluForkEpoch:
 		return version.Fulu
 	case epoch >= params.BeaconConfig().ElectraForkEpoch:
@@ -128,7 +128,7 @@ func EpochStart(epoch primitives.Epoch) (primitives.Slot, error) {
 func UnsafeEpochStart(epoch primitives.Epoch) primitives.Slot {
 	es, err := EpochStart(epoch)
 	if err != nil {
-		panic(err)
+		panic(err) // lint:nopanic -- Unsafe is implied and communicated in the godoc commentary.
 	}
 	return es
 }

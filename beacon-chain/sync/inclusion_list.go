@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/OffchainLabs/prysm/v6/beacon-chain/core/feed"
+	opfeed "github.com/OffchainLabs/prysm/v6/beacon-chain/core/feed/operation"
+	"github.com/OffchainLabs/prysm/v6/beacon-chain/core/helpers"
+	"github.com/OffchainLabs/prysm/v6/config/params"
+	"github.com/OffchainLabs/prysm/v6/encoding/ssz"
+	eth "github.com/OffchainLabs/prysm/v6/proto/prysm/v1alpha1"
+	prysmTime "github.com/OffchainLabs/prysm/v6/time"
+	"github.com/OffchainLabs/prysm/v6/time/slots"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/pkg/errors"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/feed"
-	opfeed "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/feed/operation"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
-	"github.com/prysmaticlabs/prysm/v5/config/params"
-	"github.com/prysmaticlabs/prysm/v5/encoding/ssz"
-	eth "github.com/prysmaticlabs/prysm/v5/proto/prysm/v1alpha1"
-	prysmTime "github.com/prysmaticlabs/prysm/v5/time"
-	"github.com/prysmaticlabs/prysm/v5/time/slots"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -144,11 +144,10 @@ func (s *Service) subscriberInclusionList(ctx context.Context, msg proto.Message
 		return errors.New("nil inclusion list")
 	}
 
-	viewFreezeDeadline := params.BeaconConfig().SecondsPerSlot*2/params.BeaconConfig().IntervalsPerSlot + 1
-	isBeforeViewFreezeDeadline := s.cfg.clock.CurrentSlot() == il.Message.Slot &&
-		slots.TimeIntoSlot(uint64(s.cfg.clock.GenesisTime().Unix())) < time.Duration(viewFreezeDeadline)*time.Second
+	isBeforeFreezeDeadline := s.cfg.clock.CurrentSlot() == il.Message.Slot &&
+		slots.TimeIntoSlot(uint64(s.cfg.clock.GenesisTime().Unix())) < time.Duration(params.BeaconConfig().InclusionListFreezeDeadLine)*time.Second
 
-	s.inclusionLists.Add(il.Message.Slot, il.Message.ValidatorIndex, il.Message.Transactions, isBeforeViewFreezeDeadline)
+	s.inclusionLists.Add(il.Message.Slot, il.Message.ValidatorIndex, il.Message.Transactions, isBeforeFreezeDeadline)
 
 	s.cfg.operationNotifier.OperationFeed().Send(&feed.Event{
 		Type: opfeed.InclusionListReceived,

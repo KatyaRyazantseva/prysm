@@ -5,11 +5,11 @@ import (
 	"math"
 	"time"
 
+	fieldparams "github.com/OffchainLabs/prysm/v6/config/fieldparams"
+	"github.com/OffchainLabs/prysm/v6/consensus-types/primitives"
+	"github.com/OffchainLabs/prysm/v6/encoding/bytesutil"
+	"github.com/OffchainLabs/prysm/v6/runtime/version"
 	"github.com/ethereum/go-ethereum/common"
-	fieldparams "github.com/prysmaticlabs/prysm/v5/config/fieldparams"
-	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
-	"github.com/prysmaticlabs/prysm/v5/encoding/bytesutil"
-	"github.com/prysmaticlabs/prysm/v5/runtime/version"
 )
 
 // BeaconChainConfig contains constant configs for node to participate in beacon chain.
@@ -170,8 +170,8 @@ type BeaconChainConfig struct {
 	ElectraForkEpoch     primitives.Epoch `yaml:"ELECTRA_FORK_EPOCH" spec:"true"`     // ElectraForkEpoch is used to represent the assigned fork epoch for electra.
 	FuluForkVersion      []byte           `yaml:"FULU_FORK_VERSION" spec:"true"`      // FuluForkVersion is used to represent the fork version for fulu.
 	FuluForkEpoch        primitives.Epoch `yaml:"FULU_FORK_EPOCH" spec:"true"`        // FuluForkEpoch is used to represent the assigned fork epoch for fulu.
-	Eip7805ForkVersion   []byte           `yaml:"EIP7805_FORK_VERSION" spec:"true"`   // Eip7805ForkVersion is used to represent the fork version for Eip7805.
-	Eip7805ForkEpoch     primitives.Epoch `yaml:"EIP7805_FORK_EPOCH" spec:"true"`     // Eip7805ForkEpoch is used to represent the assigned fork epoch for Eip7805.
+	Eip7805ForkVersion   []byte           `yaml:"EIP7805_FORK_VERSION" spec:"true"`   // Eip7805ForkVersion is used to represent the fork version for fulu.
+	Eip7805ForkEpoch     primitives.Epoch `yaml:"EIP7805_FORK_EPOCH" spec:"true"`     // Eip7805ForkEpoch is used to represent the assigned fork epoch for fulu.
 
 	ForkVersionSchedule map[[fieldparams.VersionLength]byte]primitives.Epoch // Schedule of fork epochs by version.
 	ForkVersionNames    map[[fieldparams.VersionLength]byte]string           // Human-readable names of fork versions.
@@ -238,8 +238,8 @@ type BeaconChainConfig struct {
 	ExecutionEngineTimeoutValue uint64 // ExecutionEngineTimeoutValue defines the seconds to wait before timing out engine endpoints with execution payload execution semantics (newPayload, forkchoiceUpdated).
 
 	// Subnet value
-	BlobsidecarSubnetCount        uint64 `yaml:"BLOB_SIDECAR_SUBNET_COUNT"`         // BlobsidecarSubnetCount is the number of blobsidecar subnets used in the gossipsub protocol.
-	BlobsidecarSubnetCountElectra uint64 `yaml:"BLOB_SIDECAR_SUBNET_COUNT_ELECTRA"` // BlobsidecarSubnetCountElectra is the number of blobsidecar subnets used in the gossipsub protocol post Electra hard fork.
+	BlobsidecarSubnetCount        uint64 `yaml:"BLOB_SIDECAR_SUBNET_COUNT" spec:"true"`         // BlobsidecarSubnetCount is the number of blobsidecar subnets used in the gossipsub protocol.
+	BlobsidecarSubnetCountElectra uint64 `yaml:"BLOB_SIDECAR_SUBNET_COUNT_ELECTRA" spec:"true"` // BlobsidecarSubnetCountElectra is the number of blobsidecar subnets used in the gossipsub protocol post Electra hard fork.
 
 	// Values introduced in Deneb hard fork
 	MaxPerEpochActivationChurnLimit  uint64           `yaml:"MAX_PER_EPOCH_ACTIVATION_CHURN_LIMIT" spec:"true"`  // MaxPerEpochActivationChurnLimit is the maximum amount of churn allotted for validator activation.
@@ -278,8 +278,7 @@ type BeaconChainConfig struct {
 	DataColumnSidecarSubnetCount          uint64           `yaml:"DATA_COLUMN_SIDECAR_SUBNET_COUNT" spec:"true"` // DataColumnSidecarSubnetCount is the number of data column sidecar subnets used in the gossipsub protocol
 
 	// Networking Specific Parameters
-	GossipMaxSize                   uint64          `yaml:"GOSSIP_MAX_SIZE" spec:"true"`                    // GossipMaxSize is the maximum allowed size of uncompressed gossip messages.
-	MaxChunkSize                    uint64          `yaml:"MAX_CHUNK_SIZE" spec:"true"`                     // MaxChunkSize is the maximum allowed size of uncompressed req/resp chunked responses.
+	MaxPayloadSize                  uint64          `yaml:"MAX_PAYLOAD_SIZE" spec:"true"`                   // MAX_PAYLOAD_SIZE is the maximum allowed size of uncompressed payload in gossip messages and rpc chunks.
 	AttestationSubnetCount          uint64          `yaml:"ATTESTATION_SUBNET_COUNT" spec:"true"`           // AttestationSubnetCount is the number of attestation subnets used in the gossipsub protocol.
 	AttestationPropagationSlotRange primitives.Slot `yaml:"ATTESTATION_PROPAGATION_SLOT_RANGE" spec:"true"` // AttestationPropagationSlotRange is the maximum number of slots during which an attestation can be propagated.
 	MaxRequestBlocks                uint64          `yaml:"MAX_REQUEST_BLOCKS" spec:"true"`                 // MaxRequestBlocks is the maximum number of blocks in a single request.
@@ -309,7 +308,8 @@ type BeaconChainConfig struct {
 	// Deprecated: This field is no longer supported. Avoid using it.
 	DeprecatedTargetBlobsPerBlockElectra int `yaml:"TARGET_BLOBS_PER_BLOCK_ELECTRA" spec:"true"`
 
-	InclusionListCommitteeSize uint64
+	InclusionListCommitteeSize  uint64
+	InclusionListFreezeDeadLine uint64
 }
 
 // InitializeForkSchedule initializes the schedules forks baked into the config.
@@ -352,7 +352,7 @@ func ConfigForkVersions(b *BeaconChainConfig) map[[fieldparams.VersionLength]byt
 		bytesutil.ToBytes4(b.DenebForkVersion):     version.Deneb,
 		bytesutil.ToBytes4(b.ElectraForkVersion):   version.Electra,
 		bytesutil.ToBytes4(b.FuluForkVersion):      version.Fulu,
-		bytesutil.ToBytes4(b.Eip7805ForkVersion):   version.Eip7805,
+		bytesutil.ToBytes4(b.Eip7805ForkVersion):   version.Focil,
 	}
 }
 

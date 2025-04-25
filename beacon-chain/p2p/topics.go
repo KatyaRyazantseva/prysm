@@ -30,8 +30,7 @@ const (
 	GossipBlsToExecutionChangeMessage = "bls_to_execution_change"
 	// GossipBlobSidecarMessage is the name for the blob sidecar message type.
 	GossipBlobSidecarMessage = "blob_sidecar"
-	// GossipInclusionList is the name for the inclusion list message type.
-	GossipInclusionList = "inclusion_list"
+	GossipInclusionList      = "inclusion_list"
 
 	// Topic Formats
 	//
@@ -54,7 +53,6 @@ const (
 	// BlsToExecutionChangeSubnetTopicFormat is the topic format for the bls to execution change subnet.
 	BlsToExecutionChangeSubnetTopicFormat = GossipProtocolAndDigest + GossipBlsToExecutionChangeMessage
 	// BlobSubnetTopicFormat is the topic format for the blob subnet.
-	BlobSubnetTopicFormat = GossipProtocolAndDigest + GossipBlobSidecarMessage + "_%d"
-	// InclusionListTopicFormat is the topic format for the inclusion list subnet.
+	BlobSubnetTopicFormat    = GossipProtocolAndDigest + GossipBlobSidecarMessage + "_%d"
 	InclusionListTopicFormat = GossipProtocolAndDigest + GossipInclusionList
 )

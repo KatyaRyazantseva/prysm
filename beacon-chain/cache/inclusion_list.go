@@ -4,15 +4,15 @@ import (
 	"crypto/sha256"
 	"sync"
 
-	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
+	"github.com/OffchainLabs/prysm/v6/consensus-types/primitives"
 )
 
 type InclusionLists struct {
 	mu  sync.RWMutex
 	ils map[primitives.Slot]map[primitives.ValidatorIndex]struct {
-		txs                        [][]byte
-		seenTwice                  bool
-		isBeforeViewFreezeDeadline bool
+		txs                    [][]byte
+		seenTwice              bool
+		isBeforeFreezeDeadline bool
 	}
 }
 
@@ -20,23 +20,23 @@ type InclusionLists struct {
 func NewInclusionLists() *InclusionLists {
 	return &InclusionLists{
 		ils: make(map[primitives.Slot]map[primitives.ValidatorIndex]struct {
-			txs                        [][]byte
-			seenTwice                  bool
-			isBeforeViewFreezeDeadline bool
+			txs                    [][]byte
+			seenTwice              bool
+			isBeforeFreezeDeadline bool
 		}),
 	}
 }
 
 // Add adds a set of transactions for a specific slot and validator index.
-func (i *InclusionLists) Add(slot primitives.Slot, validatorIndex primitives.ValidatorIndex, txs [][]byte, isBeforeViewFreezeDeadline bool) {
+func (i *InclusionLists) Add(slot primitives.Slot, validatorIndex primitives.ValidatorIndex, txs [][]byte, isBeforeFreezeDeadline bool) {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 
 	if _, ok := i.ils[slot]; !ok {
 		i.ils[slot] = make(map[primitives.ValidatorIndex]struct {
-			txs                        [][]byte
-			seenTwice                  bool
-			isBeforeViewFreezeDeadline bool
+			txs                    [][]byte
+			seenTwice              bool
+			isBeforeFreezeDeadline bool
 		})
 	}
 
@@ -47,7 +47,7 @@ func (i *InclusionLists) Add(slot primitives.Slot, validatorIndex primitives.Val
 
 	if entry.txs == nil {
 		entry.txs = txs
-		entry.isBeforeViewFreezeDeadline = isBeforeViewFreezeDeadline
+		entry.isBeforeFreezeDeadline = isBeforeFreezeDeadline
 	} else {
 		entry.seenTwice = true
 		entry.txs = nil // Clear transactions to save space if seen twice.
@@ -68,7 +68,7 @@ func (i *InclusionLists) Get(slot primitives.Slot) [][]byte {
 	var uniqueTxs [][]byte
 	seen := make(map[[32]byte]struct{})
 	for _, entry := range ils {
-		if !entry.isBeforeViewFreezeDeadline {
+		if !entry.isBeforeFreezeDeadline {
 			continue
 		}
 		for _, tx := range entry.txs {
